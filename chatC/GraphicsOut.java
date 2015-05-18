@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.List;
+import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -86,11 +87,12 @@ public class GraphicsOut extends JFrame {
 	Color topBarContactGray = new Color (200, 200, 200); //Grey
 	Color colorTopBarGray = new Color (155,155,155); //Grey
 	Color defaultInfoGray = new Color (155,155,155); //Grey
+	Color chatGray = new Color (240,240,240); //Grey
 	Color sendButtonGreen = new Color (130,219,136); //Grey
 
 	//Fonts
 	Font chatBoxFont = new Font(Font.SANS_SERIF, CHAR_SIZE, CHAR_SIZE);
-	Font chatFont = new Font(Font.SANS_SERIF, 15, 15);
+	Font chatFont = new Font(Font.DIALOG_INPUT, 15, 15);
 	Font titleFont = new Font(Font.MONOSPACED, 42, 42);
 	Font contactFont = new Font(Font.SERIF, 25, 25);
 	Font onlineFont = new Font(Font.SERIF, 10, 10);
@@ -426,15 +428,15 @@ public class GraphicsOut extends JFrame {
 				//x
 				int x;
 				if (number == 0) {
-					x = width - greatest - 50;
+					x = width - greatest - 20;
 				} else {
 					x = 70;
 				}
 				//Draw the Rectangle around the chat
 				g.setColor(Color.black);
-				g.drawRoundRect(x, drawPointY, greatest+7, 20*lines.size()+10, 10, 10);
-				g.setColor(topBarContactGray);
-				g.fillRoundRect(x, drawPointY, greatest+7, 20*lines.size()+10, 10, 10);
+				g.drawRoundRect(x, drawPointY, greatest+7, 20*lines.size()+10, 5, 5);
+				g.setColor(chatGray);
+				g.fillRoundRect(x, drawPointY, greatest+7, 20*lines.size()+10, 5, 5);
 				//Loop through for each message;
 				for (int k = 0; k < lines.size(); k+=1) {
 					g.setColor(Color.black);
@@ -530,7 +532,6 @@ public class GraphicsOut extends JFrame {
 		g.setColor(sendButtonGreen);
 		g.fillRoundRect(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 6, 100, 50, 10, 10);
 		g.drawImage(sendImage, data.getChatBox().getX() + data.getChatBox().getWidth() + 15, data.getChatBox().getY() + 14, 90, 35, null);
-
 	}
 
 	/** drawSideBar */
@@ -700,7 +701,7 @@ public class GraphicsOut extends JFrame {
 		data.setuLoginR(uLoginR);
 		data.setpLoginR(pLoginR);
 		//ChatBoxes
-		cb = new ChatBox(chatBoxR, false, CHAR_SIZE,-1);
+		cb = new ChatBox(chatBoxR, false, CHAR_SIZE, 500);
 		cb.setVisible(false);
 		uL = new ChatBox(uLoginR, false, 15, 12);
 		uL.setVisible(true);

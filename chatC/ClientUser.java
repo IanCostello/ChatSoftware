@@ -23,7 +23,7 @@ public class ClientUser {
 	
 	public void generateKeys() {
 		CostelloKeyPair kp = new CostelloKeyPair();
-		BigInteger[] keys = kp.getKeys(512);
+		BigInteger[] keys = kp.getKeys(4096);
 		publicMod = keys[0];
 		publicKey = keys[1];
 		privMod = keys[2];

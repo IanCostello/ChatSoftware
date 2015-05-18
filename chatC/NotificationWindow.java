@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
@@ -46,14 +47,13 @@ public class NotificationWindow {
 			frame.setAutoRequestFocus(false);
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 			double screenWidth = screenSize.getWidth();
-			
 			frame.setLocation((int)screenWidth-width-5, 30);
 			frame.setFocusable(false);
 			frame.setVisible(true);
 			Graphics g = frame.getGraphics();
 			//TODO Change this value up
 			try {
-				Thread.sleep(30);
+				Thread.sleep(50);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
