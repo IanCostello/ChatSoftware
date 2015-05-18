@@ -12,6 +12,7 @@ import java.awt.Insets;
 import java.awt.List;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
@@ -56,6 +57,8 @@ public class GraphicsOut extends JFrame {
 	private Rectangle sideBar;
 	private Rectangle lockRect = new Rectangle(593, 42, 38, 32);
 	//Finals
+	private final int WIDTH_OF_WINDOW = 725;
+	private final int HEIGHT_OF_WINDOW = 450;
 	private final int EXPAND_BOX_XSHIFT = 45;
 	private final int SIDE_BAR_WIDTH = 50;
 	private final double SIDE_BAR_PERCENT_SHIFT = 0.8;
@@ -104,15 +107,20 @@ public class GraphicsOut extends JFrame {
 	//Users
 	private ClientUser user;
 	private boolean badLogin;
+	NotificationWindow nw = new NotificationWindow();
 
+	
 	/** Main */
 	//	public static void main (String[] args) {
 	//		GraphicsOut go = new GraphicsOut();
 	//	}
 
 	public GraphicsOut(int version) {
-
 		//Window Options
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		double screenWidth = screenSize.getWidth();
+		double screenHeight = screenSize.getHeight();
+		setLocation((int)screenWidth/2 - (WIDTH_OF_WINDOW/2), (int) screenHeight/2 - (HEIGHT_OF_WINDOW/2));
 		setFocusTraversalKeysEnabled(false);
 		setSize(725, 450);
 		setResizable(false);
@@ -140,6 +148,7 @@ public class GraphicsOut extends JFrame {
 				exit();
 			}
 		});	
+
 		//Vars
 		initVars();
 		//Mouse 
@@ -159,7 +168,7 @@ public class GraphicsOut extends JFrame {
 	public void exit() {
 		System.out.println("Exiting...");
 		data.getXml().write();
-		//System.exit(0);
+		System.exit(0);
 	}
 
 	private ImageIcon getImage(String path) {
@@ -171,6 +180,7 @@ public class GraphicsOut extends JFrame {
 
 	/** Paint Method */
 	public void paint(Graphics g) {
+		//Test
 		if (firstRun) {
 			g.setColor(Color.white);
 			g.fillRect(0, 0, width, height);
@@ -221,7 +231,7 @@ public class GraphicsOut extends JFrame {
 			g.drawString("Username", 285, 150);
 			g.drawString("Display Name", 280, 235);
 		}
-		
+
 		//Draw Login Bar
 		int logX = 175;
 		int heightUY = 157;
@@ -485,7 +495,7 @@ public class GraphicsOut extends JFrame {
 
 	/** drawSideBar */
 	public void drawSideBar(Graphics g) {
-	
+
 		backColor = Color.white;
 		//Changes to Vars
 		sideBar.height = height;
@@ -507,7 +517,7 @@ public class GraphicsOut extends JFrame {
 				g.setColor(Color.white);
 				g.drawLine(sideBar.x - 5, 40, sideBar.x - 5, height - 15);
 			}
-		
+
 			if (data.isContactsPressed()) {
 				if (data.isConnectMenu()) {
 					connectMenu(g);
@@ -604,7 +614,7 @@ public class GraphicsOut extends JFrame {
 			g.fillRect(0, 0, width, height);
 			data.setMultiUserOldSize(-1); 
 		} else if (data.isConnectMenu()) {
-			
+
 		} else if (data.getChatBox().isFocused()) {
 			g.setColor(chatBoxGray);
 			drawRect(g, chatBoxR, 3, 3);
@@ -679,10 +689,10 @@ public class GraphicsOut extends JFrame {
 			}
 		}
 	}
-	
+
 	public class UpdateServer extends Thread {
 		int count = 101;
-		
+
 		public void run() {
 			if (firstRunForUpdate) {
 				try {
@@ -810,18 +820,19 @@ public class GraphicsOut extends JFrame {
 					// Message
 					//   msg fromUser TheMessage
 				} else if (bBuf.startsWith("msg ")) {
-//					ByteBuffer data = new ByteBuffer();
-//					data.append(bBuf);
-//					data.hexToBytes();
-//					ByteBuffer decrypted = new ByteBuffer();
-//					decrypted.append(rsa.decryptHex(data, privKey, privMod));
-//					System.out.println(decrypted.toString());
+					//					ByteBuffer data = new ByteBuffer();
+					//					data.append(bBuf);
+					//					data.hexToBytes();
+					//					ByteBuffer decrypted = new ByteBuffer();
+					//					decrypted.append(rsa.decryptHex(data, privKey, privMod));
+					//					System.out.println(decrypted.toString());
 					//Get Who its From
 					bBuf.moveStart(bBuf.start()+4);
 					ByteBuffer fromWho = new ByteBuffer();
 					bBuf.getToken(fromWho, ByteBuffer.WHITE_SPACE);
+					String messageSender = fromWho.toString();
 					//Get The User
-					ClientUser user = data.getXml().getUser(fromWho.toString());
+					ClientUser user = data.getXml().getUser(messageSender);
 					if (user!=null) {
 						//Decrypt
 						CostelloKeyPair kp = new CostelloKeyPair();
@@ -831,11 +842,15 @@ public class GraphicsOut extends JFrame {
 						ByteBuffer message = new ByteBuffer();
 						message.append(kp.decryptHex(hex, localUser.getPrivKey(), localUser.getPrivMod()));
 						user.addMessage(message.toString(), false);
+						String capitalized = messageSender.substring(0, 1).toUpperCase() + messageSender.substring(1);
+						if (!isFocused() || !data.getXml().getUsers().get(data.getCurrentUser()).getUsername().equalsIgnoreCase(messageSender)) {
+							nw.createWindow(" New Message From " + capitalized);
+						}
 					}
 					data.setWaitChange(true);
-					
-				// Active
-				//   active mark markus
+
+					// Active
+					//   active mark markus
 				} else if (bBuf.startsWith("active ")) {
 					bBuf.moveStart(bBuf.start()+7);
 					ByteBuffer token = new ByteBuffer();
@@ -848,9 +863,9 @@ public class GraphicsOut extends JFrame {
 						}
 					}
 					data.setWaitChange(true);
-					
-				// Inactive
-				//   inactive mark markus
+
+					// Inactive
+					//   inactive mark markus
 				} else if (bBuf.startsWith("inactive ")) {
 					bBuf.moveStart(bBuf.start()+9);
 					ByteBuffer token = new ByteBuffer();
@@ -861,9 +876,9 @@ public class GraphicsOut extends JFrame {
 						}
 					}
 					data.setSomethingChanged(true);
-					
-				// Add Friend response:
-				//   addFriend mark ok online
+
+					// Add Friend response:
+					//   addFriend mark ok online
 				} else if (bBuf.startsWith("addFriend ")) {
 					bBuf.moveStart(bBuf.start() +10);
 					ByteBuffer token = new ByteBuffer();
