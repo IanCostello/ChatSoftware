@@ -84,6 +84,10 @@ public class GraphicsOut extends JFrame {
 	Color contactCircleGray = new Color(84, 84, 71); //Very Gray <-- This color needs update
 	Color topBarGray = new Color (81, 106, 115); //A gray with slight hint of blue
 	Color topBarContactGray = new Color (200, 200, 200); //Grey
+	Color colorTopBarGray = new Color (155,155,155); //Grey
+	Color defaultInfoGray = new Color (155,155,155); //Grey
+	Color sendButtonGreen = new Color (130,219,136); //Grey
+
 	//Fonts
 	Font chatBoxFont = new Font(Font.SANS_SERIF, CHAR_SIZE, CHAR_SIZE);
 	Font chatFont = new Font(Font.SANS_SERIF, 15, 15);
@@ -120,11 +124,15 @@ public class GraphicsOut extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		double screenWidth = screenSize.getWidth();
 		double screenHeight = screenSize.getHeight();
+		//Set Location In The Center OF Screen
 		setLocation((int)screenWidth/2 - (WIDTH_OF_WINDOW/2), (int) screenHeight/2 - (HEIGHT_OF_WINDOW/2));
 		setFocusTraversalKeysEnabled(false);
+		//Other Setters
 		setSize(725, 450);
 		setResizable(false);
-		createBufferStrategy(1);
+		setUndecorated(false);
+
+		//For Debug
 		if (version == 0) {
 			setTitle("Secure Chat - Ian");
 		} else if (version == 1) {
@@ -144,7 +152,6 @@ public class GraphicsOut extends JFrame {
 		//Custom exit options
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {
-				data.getSocket().write("logout\n");
 				exit();
 			}
 		});	
@@ -166,12 +173,17 @@ public class GraphicsOut extends JFrame {
 
 	/** Exit - Called When the Program Exits */
 	public void exit() {
-		System.out.println("Exiting...");
+		//Notify Server of Logout
+		data.getSocket().write("logout\n");
+		//Save The Xml
 		data.getXml().write();
+		System.out.println("Exiting...");
 		System.exit(0);
 	}
 
+	/** getImage */
 	private ImageIcon getImage(String path) {
+		//Loads the resource | For Jars
 		ImageIcon image=null;
 		URL url = getClass().getResource(path);
 		image = new ImageIcon(url);
@@ -214,6 +226,7 @@ public class GraphicsOut extends JFrame {
 			drawSideBar(g);
 			data.setBigChange(false);
 		}
+		//drawTopButtons(g);
 	}
 
 	public void connectMenu(Graphics g) {
@@ -230,6 +243,7 @@ public class GraphicsOut extends JFrame {
 			g.setFont(friendsFont);
 			g.drawString("Username", 285, 150);
 			g.drawString("Display Name", 280, 235);
+			//Group Messages
 		}
 
 		//Draw Login Bar
@@ -258,6 +272,7 @@ public class GraphicsOut extends JFrame {
 		}
 	}
 
+	/** createLoginScreen */
 	public void createLoginScreen(Graphics g) {
 		backColor = Color.gray;
 		if (data.isBigChange() || firstPaint) {
@@ -298,6 +313,15 @@ public class GraphicsOut extends JFrame {
 		//Draw The Messages inside
 		g.drawString(uLoginInfo, logX+(loginWidth/2)-(uLength/2), heightUY+40);
 		g.drawString(pLoginInfo, logX+(loginWidth/2)-(pLength/2), heightPY+45);
+		//Draw Default Info
+		g.setColor(defaultInfoGray);
+		if (uLoginInfo.equals("")) {
+			g.drawString("Username", logX-(uLength/2)+43, heightUY+40);
+		} 
+		if (pLoginInfo.equals("")) {
+			g.drawString("Password", logX-(pLength/2)+52, heightPY+40);
+		}
+		//Draw The Focused Box
 		g.setColor(Color.blue);
 		if (data.getuLogin().isFocused()) {
 			g.drawRoundRect(logX, heightUY, loginWidth, 50, 10, 10);
@@ -408,9 +432,12 @@ public class GraphicsOut extends JFrame {
 				}
 				//Draw the Rectangle around the chat
 				g.setColor(Color.black);
-				g.drawRect(x, drawPointY, greatest+7, 20*lines.size()+10);
+				g.drawRoundRect(x, drawPointY, greatest+7, 20*lines.size()+10, 10, 10);
+				g.setColor(topBarContactGray);
+				g.fillRoundRect(x, drawPointY, greatest+7, 20*lines.size()+10, 10, 10);
 				//Loop through for each message;
 				for (int k = 0; k < lines.size(); k+=1) {
+					g.setColor(Color.black);
 					String toPrint = lines.get(k);
 					int toPrintLength = fontMet.stringWidth(toPrint);
 					g.drawString(toPrint, x + ((lengths.get(k)+10)/2)-(toPrintLength/2), drawPointY + (k*20) + 20);
@@ -420,6 +447,15 @@ public class GraphicsOut extends JFrame {
 		}
 	}
 
+	public void drawTopButtons(Graphics g) {
+		//Exit Buttons
+		g.setColor(colorTopBarGray);
+		g.fillRect(0, 0, width, 23);
+		//TODO All the top buttons
+		g.setColor(Color.red);
+		g.fillOval(3, 3, 18, 18);
+	}
+	
 	/** drawTopBar */
 	public void drawTopBar(Graphics g) {
 		//Base Color
@@ -446,6 +482,7 @@ public class GraphicsOut extends JFrame {
 		g.fillOval(73, 27, 43, 43);
 		g.setColor(contactCircleGray);
 		g.fillOval(77, 31, 35, 35);
+	
 	}
 
 	/** drawMessageBox */
@@ -453,7 +490,7 @@ public class GraphicsOut extends JFrame {
 		//Message Box
 		data.getChatBox().setVisible(true);
 		g.setColor(chatBoxGray);
-		drawRect(g, chatBoxR, 3, 3);
+		drawRect(g, chatBoxR, 10, 10);
 
 		//Print out box
 		ArrayList<String> lines = new ArrayList<String>();
@@ -490,7 +527,10 @@ public class GraphicsOut extends JFrame {
 		}
 
 		//Send
-		g.drawImage(sendImage, data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 11, 100, 40, null);
+		g.setColor(sendButtonGreen);
+		g.fillRoundRect(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 6, 100, 50, 10, 10);
+		g.drawImage(sendImage, data.getChatBox().getX() + data.getChatBox().getWidth() + 15, data.getChatBox().getY() + 14, 90, 35, null);
+
 	}
 
 	/** drawSideBar */
