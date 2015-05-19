@@ -9,12 +9,13 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.GraphicsConfiguration;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 
+/** Notification Window
+ * Interface for creating notifications
+ */
 public class NotificationWindow {
 	Color topAreaBlue = new Color(131, 118, 162);
 	Color mainAreaWhite = new Color(222, 222, 222);
@@ -39,7 +40,6 @@ public class NotificationWindow {
 			int height = 50;
 			JFrame frame = new JFrame("Notification Window");
 			//Create a new window in the top right of the screen that is undecorated
-//			frame.getContentPane().add(new JLabel(message));
 			frame.setUndecorated(true);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame.setSize(width, height);
@@ -57,6 +57,7 @@ public class NotificationWindow {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
+			//Looks of the window
 			g.setColor(topAreaBlue);
 			g.fillRect(0, 0, width, 20);
 			g.setColor(mainAreaWhite);

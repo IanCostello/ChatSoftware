@@ -1,6 +1,5 @@
 package me.iancostello.sec;
 
-import java.awt.RenderingHints.Key;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -39,8 +38,6 @@ public class CostelloKeyPair {
 			kpg.initialize(size);
 			//Generates the keyPair
 			KeyPair kp = kpg.genKeyPair();
-			PublicKey publicKey = kp.getPublic();
-			PrivateKey privateKey = kp.getPrivate();
 			//Creates the parameters for the keys
 			KeyFactory fact = KeyFactory.getInstance("RSA");
 			RSAPublicKeySpec pub = fact.getKeySpec(kp.getPublic(), RSAPublicKeySpec.class);

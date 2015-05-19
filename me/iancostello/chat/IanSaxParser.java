@@ -3,12 +3,13 @@ package me.iancostello.chat;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.iancostello.util.ByteBuffer;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/** IanSaxParser
+ * Handles reading the Server XML
+ */
 public class IanSaxParser extends DefaultHandler {
 	//Storing Users Read In
 	private List<User> users;
@@ -77,7 +78,7 @@ public class IanSaxParser extends DefaultHandler {
 	 * returns list of users
 	 * @return List users
 	 */
-	public List getUserList() {
+	public List<User> getUserList() {
 		return users;
 	}
 }

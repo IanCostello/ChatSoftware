@@ -3,8 +3,10 @@ package chatC;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import me.iancostello.util.ByteBuffer;
-
+/** MouseHandler
+ * Basic Mouse Handler
+ * @author iancostello
+ */
 public class MouseHandler implements MouseListener {
 	int x;
 	int y;
@@ -63,7 +65,7 @@ public class MouseHandler implements MouseListener {
 		} else if ((data.getChatBox().isVisible()) && (cd.collidesWith(x, y, data.getChatBox().getRect()))) {
 			data.getChatBox().setFocused(true);
 			//If the send button is pressed
-		} else if (!data.isExpandBoxPressed() && cd.collidesWith(x, y, data.getSendButtom())) {
+		} else if (!data.isExpandBoxPressed() && cd.collidesWith(x, y, data.getSendButton())) {
 			if (data.getChatBox().isFocused()) {
 				data.getChatBox().setShouldWrite(true);
 			}

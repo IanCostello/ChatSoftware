@@ -101,7 +101,7 @@ public class ChatSocket {
 	}
 	
 	/** close
-	 *		Close the socket
+	 *		Closes the socket
 	 */
 	public void close() {
 		if (input!=null) {
@@ -127,66 +127,20 @@ public class ChatSocket {
 		}
 	}
 	
+	/** log
+	 * logs a message into the console
+	 * @param message
+	 */
 	public void log(String message) {
 		Date date = new Date();
 		System.out.println(dateFormat.format(date) + ": " + message);
-	}
-	
-	/** read
-	 *		Read from socket input.
-	 *		Return null if nothing there.
-	 *
-	 *		@param long maxDelay. Time to wait. -1 is forever.
-	 */
-	public ByteBuffer readOLD(long maxDelay) throws IOException {
-		//InputStream input = socket.getInputStream();
-		int end = iBuf.end();
-		long startTime=0;
-		while (true) {
-			if (input!=null) {
-				int avail = input.available();
-				if (avail>0) {
-					iBuf.ensureCapacity(end+avail);
-					byte[] buf = iBuf.getBytes();
-					int numRead = input.read(buf,end,buf.length-end);
-					if (numRead<0) break;
-					end+=numRead;
-					iBuf.moveEnd(end);
-				}
-			}
-				
-			int crIndex = iBuf.indexOf('\n');
-			if (crIndex>=0) {
-				ByteBuffer iBuf2 = iBuf;
-				iBuf = new ByteBuffer();
-				iBuf.append(iBuf.getBytes(),crIndex+1,end);
-				iBuf2.moveEnd(crIndex);
-				
-				//if (localUser.startsWith("Server")) {
-					log("From "+remoteUser+" to "+localUser+": "+iBuf2);
-				//}
-				
-				return iBuf2;
-
-			} else if (input==null) {
-				//throw new IOException("Stream closed");
-				break;
-			} else if (maxDelay==0) {
-				break;
-			} else if (startTime==0) {
-				startTime = System.currentTimeMillis();
-			} else if ((System.currentTimeMillis()-startTime >= maxDelay) && (maxDelay>0)) {
-				break;
-			}
-		}
-		return null;
 	}
 	
 	/** isConnected 
 	 * Socket will be null before login.
 	 * Attempt to login will create socket.
 	 * When server accepts the connection for the first time, socket.isConnected() will become true (and remain true).
-	 * If connection lost, for any reason, then socket.isClosed() will become true.
+	 * If connection lost, for any reason, then socket.isClosed() will become false.
 	*/
 	public boolean isConnected() {
 	    return ((socket!=null) && socket.isConnected() && !socket.isClosed());
@@ -194,8 +148,7 @@ public class ChatSocket {
 	
 	/** read
 	 *		Read from socket input.
-	 *		Return null if nothing there.
-	 *
+	 *		Return null if nothing is there.
 	 *		@param long maxDelay. Time to wait. -1 is forever.
 	 */
 	public ByteBuffer read(long maxDelay) throws IOException {
@@ -214,7 +167,7 @@ public class ChatSocket {
 				iBuf.moveEnd(end);
 			}
 				
-			// Return characters thru CR
+			// Return characters upto CR
 			int crIndex = iBuf.indexOf('\n');
 			if (crIndex>=0) {
 				ByteBuffer iBuf2 = iBuf;
@@ -232,7 +185,7 @@ public class ChatSocket {
 			} else if ((socket==null) || socket.isClosed()) {
 				throw new IOException("Stream closed");
 				
-			// Blocking read?
+			//Ifi there is no readout time
 			} else if (maxDelay<0) {
 				iBuf.ensureCapacity(end+512);
 				byte[] buf = iBuf.getBytes();
@@ -243,7 +196,7 @@ public class ChatSocket {
 				end+=numRead;
 				iBuf.moveEnd(end);
 
-			// No wait?
+			// No wait
 			} else if (maxDelay==0) {
 				break;
 				
@@ -266,19 +219,9 @@ public class ChatSocket {
 	}
 	
 	/** write
-	 *		Write to socket.
-	 *		CR terminates the command
-	 *		Make this synchronized so two simultaneous messages do not get scrambled.
-	 */
-	public void write(String s) {
-		byte[] buf = s.getBytes();
-		write(buf,0,buf.length, true);
-	}
-	
-	/** write
-	 *		Write to socket.
-	 *		CR terminates the command
-	 *		Make this synchronized so two simultaneous messages do not get scrambled.
+	 *		Write to socket, but don't display the message in console. 
+	 *		Should be used when a user creates an account or any other sensitive info
+	 *		'\n' is expected at the end
 	 */
 	public void privWrite(String s) {
 		byte[] buf = s.getBytes();
@@ -286,21 +229,30 @@ public class ChatSocket {
 	}
 	
 	/** write
-	 *		Write to socket
-	 *		CR terminates the command
+	 *		Write to socket.
+	 *		'\n' is expected at the end
 	 *		Make this synchronized so two simultaneous messages do not get scrambled.
 	 */
 	public void privWrite(ByteBuffer bBuf) {
 		write(bBuf.getBytes(),bBuf.start(),bBuf.end(), false);
 	}
-	
 	/** write
-	 *		Write to socket
-	 *		CR terminates the command
-	 *		Make this synchronized so two simultaneous messages do not get scrambled.
+	 *		Write to socket, but don't display the message in console. 
+	 *		Should be used when a user creates an account or any other sensitive info
+	 *		'\n' is expected at the end
 	 */
 	public void write(ByteBuffer bBuf) {
 		write(bBuf.getBytes(),bBuf.start(),bBuf.end(), true);
+	}
+	
+	/** write
+	 *		Write to socket.
+	 *		'\n' is expected at the end
+	 *		Make this synchronized so two simultaneous messages do not get scrambled.
+	 */
+	public void write(String s) {
+		byte[] buf = s.getBytes();
+		write(buf,0,buf.length, true);
 	}
 	
 	/** write
@@ -329,6 +281,10 @@ public class ChatSocket {
 		}
 	}
 	
+	/** setDataInterface
+	 * Sets the data interface
+	 * @param data
+	 */
 	public void setDataInterface(DataInterface data) {
 		this.data = data;
 	}

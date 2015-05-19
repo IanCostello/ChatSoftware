@@ -1,17 +1,19 @@
 package chatC;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
 
+/** DataInterface
+ * Storage Of All Local Variables
+ */
 public class DataInterface {
-	private boolean expandBoxPressed;
-	private Rectangle expandBox;
-	private Rectangle sendButtom;
-	private Rectangle lockRectangle;
-	private ChatBox chatBox;
-	private ChatBox uLogin;
-	private ChatBox pLogin;
-	private boolean lockPressed;
+	private boolean expandBoxPressed; //Whether the entire screen has moved over
+	private Rectangle expandBox; //Its locations
+	private Rectangle sendButton; //The sendbutton
+	private Rectangle lockRectangle; //Obselete
+	private ChatBox chatBox; //ChatBox
+	private ChatBox uLogin; //User Login Box
+	private ChatBox pLogin; //Password Login Box
+	private boolean lockPressed; //Whether the lock has been pressed or not
 	private boolean expandBoxChanged;
 	private boolean somethingChanged;
 	private Rectangle uLoginR;
@@ -31,15 +33,15 @@ public class DataInterface {
 	private long loginTime;
 	private boolean setWaitChange;
 	
-	public DataInterface(int version) {
+	protected DataInterface(int version) {
 		xml = new ClientXML((System.getProperty("user.home") + "/chatC/data/users" + version + ".xml"), "users");
 	}
 	
-	public ClientXML getXml() {
+	protected ClientXML getXml() {
 		return xml;
 	}
 	
-	public int getFriendsOnline() {
+	protected int getFriendsOnline() {
 		int online = 0;
 		for (int i = xml.getUsers().size()-1; i >= 0; i-=1) {
 			if (xml.getUsers().get(i).isOnline()) {
@@ -84,56 +86,56 @@ public class DataInterface {
 	/**
 	 * @return the uLoginR
 	 */
-	public Rectangle getuLoginR() {
+	protected Rectangle getuLoginR() {
 		return uLoginR;
 	}
 
 	/**
 	 * @param uLoginR the uLoginR to set
 	 */
-	public void setuLoginR(Rectangle uLoginR) {
+	protected void setuLoginR(Rectangle uLoginR) {
 		this.uLoginR = uLoginR;
 	}
 
 	/**
 	 * @return the pLoginR
 	 */
-	public Rectangle getpLoginR() {
+	protected Rectangle getpLoginR() {
 		return pLoginR;
 	}
 
 	/**
 	 * @param pLoginR the pLoginR to set
 	 */
-	public void setpLoginR(Rectangle pLoginR) {
+	protected void setpLoginR(Rectangle pLoginR) {
 		this.pLoginR = pLoginR;
 	}
 
 	/**
 	 * @return the inLoginScreen
 	 */
-	public boolean isInLoginScreen() {
+	protected boolean isInLoginScreen() {
 		return inLoginScreen;
 	}
 
 	/**
 	 * @param inLoginScreen the inLoginScreen to set
 	 */
-	public void setInLoginScreen(boolean inLoginScreen) {
+	protected void setInLoginScreen(boolean inLoginScreen) {
 		this.inLoginScreen = inLoginScreen;
 	}
 
 	/**
 	 * @return the shouldLogin
 	 */
-	public boolean isShouldLogin() {
+	protected boolean isShouldLogin() {
 		return shouldLogin;
 	}
 
 	/**
 	 * @param shouldLogin the shouldLogin to set
 	 */
-	public void setShouldLogin(boolean shouldLogin) {
+	protected void setShouldLogin(boolean shouldLogin) {
 		this.shouldLogin = shouldLogin;
 	}
 
@@ -154,232 +156,232 @@ public class DataInterface {
 	/**
 	 * @return the sendButtom
 	 */
-	public Rectangle getSendButtom() {
-		return sendButtom;
+	protected Rectangle getSendButton() {
+		return sendButton;
 	}
 
 	/**
 	 * @param sendButtom the sendButtom to set
 	 */
-	public void setSendButtom(Rectangle sendButtom) {
-		this.sendButtom = sendButtom;
+	protected void setSendButtom(Rectangle sendButton) {
+		this.sendButton = sendButton;
 	}
 
 	/**
 	 * @return the lockRectangle
 	 */
-	public Rectangle getLockRectangle() {
+	protected Rectangle getLockRectangle() {
 		return lockRectangle;
 	}
 
 	/**
 	 * @param lockRectangle the lockRectangle to set
 	 */
-	public void setLockRectangle(Rectangle lockRectangle) {
+	protected void setLockRectangle(Rectangle lockRectangle) {
 		this.lockRectangle = lockRectangle;
 	}
 
 	/**
 	 * @return the chatBox
 	 */
-	public ChatBox getChatBox() {
+	protected ChatBox getChatBox() {
 		return chatBox;
 	}
 
 	/**
 	 * @param chatBox the chatBox to set
 	 */
-	public void setChatBox(ChatBox chatBox) {
+	protected void setChatBox(ChatBox chatBox) {
 		this.chatBox = chatBox;
 	}
 
 	/**
 	 * @return the lockPressed
 	 */
-	public boolean isLockPressed() {
+	protected boolean isLockPressed() {
 		return lockPressed;
 	}
 
 	/**
 	 * @param lockPressed the lockPressed to set
 	 */
-	public void setLockPressed(boolean lockPressed) {
+	protected void setLockPressed(boolean lockPressed) {
 		this.lockPressed = lockPressed;
 	}
 
 	/**
 	 * @return the bigChange
 	 */
-	public boolean isBigChange() {
+	protected boolean isBigChange() {
 		return bigChange;
 	}
 
 	/**
 	 * @param bigChange the bigChange to set
 	 */
-	public void setBigChange(boolean bigChange) {
+	protected void setBigChange(boolean bigChange) {
 		this.bigChange = bigChange;
 	}
 
 	/**
 	 * @return the currentUser
 	 */
-	public int getCurrentUser() {
+	protected int getCurrentUser() {
 		return currentUser;
 	}
 
 	/**
 	 * @param currentUser the currentUser to set
 	 */
-	public void setCurrentUser(int currentUser) {
+	protected void setCurrentUser(int currentUser) {
 		this.currentUser = currentUser;
 	}
 
 	/**
 	 * @return the contactsPressed
 	 */
-	public boolean isContactsPressed() {
+	protected boolean isContactsPressed() {
 		return contactsPressed;
 	}
 
 	/**
 	 * @param contactsPressed the contactsPressed to set
 	 */
-	public void setContactsPressed(boolean contactsPressed) {
+	protected void setContactsPressed(boolean contactsPressed) {
 		this.contactsPressed = contactsPressed;
 	}
 
 	/**
 	 * @return the contacts
 	 */
-	public Rectangle getContacts() {
+	protected Rectangle getContacts() {
 		return contacts;
 	}
 
 	/**
 	 * @param contacts the contacts to set
 	 */
-	public void setContacts(Rectangle contacts) {
+	protected void setContacts(Rectangle contacts) {
 		this.contacts = contacts;
 	}
 
 	/**
 	 * @return the multiUserOldSize
 	 */
-	public int getMultiUserOldSize() {
+	protected int getMultiUserOldSize() {
 		return multiUserOldSize;
 	}
 
 	/**
 	 * @param multiUserOldSize the multiUserOldSize to set
 	 */
-	public void setMultiUserOldSize(int multiUserOldSize) {
+	protected void setMultiUserOldSize(int multiUserOldSize) {
 		this.multiUserOldSize = multiUserOldSize;
 	}
 
 	/**
 	 * @return the expandBoxPressed
 	 */
-	public boolean isExpandBoxPressed() {
+	protected boolean isExpandBoxPressed() {
 		return expandBoxPressed;
 	}
 
 	/**
 	 * @return the somethingChanged
 	 */
-	public boolean isSomethingChanged() {
+	protected boolean isSomethingChanged() {
 		return somethingChanged;
 	}
 
 	/**
 	 * @return the somethingChanged
 	 */
-	public boolean hasSomethingChanged() {
+	protected boolean hasSomethingChanged() {
 		return somethingChanged;
 	}
 
 	/**
 	 * @param somethingChanged the somethingChanged to set
 	 */
-	public void setSomethingChanged(boolean change) {
+	protected void setSomethingChanged(boolean change) {
 		somethingChanged = change;
 	}
 
 	/**
 	 * @return the expandBox
 	 */
-	public Rectangle getExpandBox() {
+	protected Rectangle getExpandBox() {
 		return expandBox;
 	}
 
 	/**
 	 * @param expandBox the expandBox to set
 	 */
-	public void setExpandBox(Rectangle expandBox) {
+	protected void setExpandBox(Rectangle expandBox) {
 		this.expandBox = expandBox;
 	}
 
-	public boolean expandBoxPressed() {
+	protected boolean expandBoxPressed() {
 		return expandBoxPressed;
 	}
 	
-	public void setExpandBoxPressed(boolean tf) {
+	protected void setExpandBoxPressed(boolean tf) {
 		expandBoxPressed = tf;
 	}
 
-	public boolean isExpandBoxChanged() {
+	protected boolean isExpandBoxChanged() {
 		return expandBoxChanged;
 	}
 
-	public void setExpandBoxChanged(boolean expandBoxChanged) {
+	protected void setExpandBoxChanged(boolean expandBoxChanged) {
 		this.expandBoxChanged = expandBoxChanged;
 	}
 
-	public boolean isConnectMenu() {
+	protected boolean isConnectMenu() {
 		return connectMenu;
 	}
 
-	public void setConnectMenu(boolean connectMenu) {
+	protected void setConnectMenu(boolean connectMenu) {
 		this.connectMenu = connectMenu;
 	}
 
-	public boolean isFirstRunSinceLogin() {
+	protected boolean isFirstRunSinceLogin() {
 		return firstRunSinceLogin;
 	}
 
-	public void setFirstRunSinceLogin(boolean firstRunSinceLogin) {
+	protected void setFirstRunSinceLogin(boolean firstRunSinceLogin) {
 		this.firstRunSinceLogin = firstRunSinceLogin;
 	}
 
-//	public XML getXml() {
+//	protected XML getXml() {
 //		return xml;
 //	}
 //
-//	public void setXml(XML xml) {
+//	protected void setXml(XML xml) {
 //		this.xml = xml;
 //	}
 
-	public ClientSocket getSocket() {
+	protected ClientSocket getSocket() {
 		return socket;
 	}
 
-	public void setSocket(ClientSocket socket) {
+	protected void setSocket(ClientSocket socket) {
 		this.socket = socket;
 	}
 
-	public long getLoginTime() {
+	protected long getLoginTime() {
 		return loginTime;
 	}
 
-	public void setLoginTime(long loginTime) {
+	protected void setLoginTime(long loginTime) {
 		this.loginTime = loginTime;
 	}
 
-	public boolean isSetWaitChange() {
+	protected boolean isSetWaitChange() {
 		return setWaitChange;
 	}
 
-	public void setWaitChange(boolean setWaitChange) {
+	protected void setWaitChange(boolean setWaitChange) {
 		this.setWaitChange = setWaitChange;
 	}
 	

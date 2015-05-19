@@ -2,6 +2,9 @@ package me.iancostello.chat;
 
 import me.iancostello.util.ByteBuffer;
 
+/** UserNode
+ * Nodes for the server
+ */
 public class UserNode {
 	private int level2;
 	private String nodeName2;

@@ -1,5 +1,6 @@
 package chatC;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -29,6 +30,9 @@ import me.iancostello.chat.ChatServer;
 import me.iancostello.sec.CostelloKeyPair;
 import me.iancostello.util.ByteBuffer;
 
+/** GraphicsOut
+ * Main Graphics 
+ */
 public class GraphicsOut extends JFrame {
 	private static final long serialVersionUID = -1417201266697509030L;
 	//For Updating
@@ -51,12 +55,9 @@ public class GraphicsOut extends JFrame {
 	private final int SIDE_BAR_WIDTH = 50;
 	private final double SIDE_BAR_PERCENT_SHIFT = 0.8;
 	private final int CHAR_SIZE = 19;
-	private static final String HOST = "http://127.0.0.1:8080";
 	//Friends
 	//Background Color
 	Color backColor;
-	//Debug
-	private static final boolean DEBUG = true;
 	//Boxes
 	private ChatBox cb;
 	private ChatBox uL;
@@ -78,7 +79,8 @@ public class GraphicsOut extends JFrame {
 	Color chatGray = new Color (167,171,192); //Grey
 	Color sendButtonGreen = new Color (130,219,136); //Grey
 	Color backGroundGrey = new Color (240,240,240); //Grey
-
+	AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
+	
 	//Fonts
 	Font chatBoxFont = new Font(Font.SANS_SERIF, CHAR_SIZE, CHAR_SIZE);
 	Font chatFont = new Font(Font.DIALOG_INPUT, 15, 15);
@@ -100,8 +102,6 @@ public class GraphicsOut extends JFrame {
 	ImageIcon gearImageIcon = getImage("/me/iancostello/chat/images/Settings.png");
 	Image gearImage;
 	//Users
-	private ClientUser user;
-	private boolean badLogin;
 	NotificationWindow nw = new NotificationWindow();
 
 	
@@ -170,7 +170,9 @@ public class GraphicsOut extends JFrame {
 	public void exit() {
 		//Notify Server of Logout
 		if (!data.isInLoginScreen()) {
-			data.getSocket().write("logout\n");
+			if (data.getSocket().isConnected()) {
+				data.getSocket().write("logout\n");
+			}
 			data.getXml().write();
 		}
 		//Save The Xml
@@ -225,6 +227,7 @@ public class GraphicsOut extends JFrame {
 		//drawTopButtons(g);
 	}
 
+	/** connectMenu */
 	public void connectMenu(Graphics g) {
 		if (data.isBigChange()) {
 			data.getpLogin().setBoxX(175);
@@ -239,7 +242,7 @@ public class GraphicsOut extends JFrame {
 			g.setFont(friendsFont);
 			g.drawString("Username", 285, 150);
 			g.drawString("Display Name", 280, 235);
-			//Group Messages
+		
 		}
 
 		//Draw Login Bar
@@ -266,6 +269,7 @@ public class GraphicsOut extends JFrame {
 		} else if (data.getpLogin().isFocused()) {
 			g.drawRoundRect(logX, heightPY, loginWidth, 50, 10, 10);
 		}
+		
 	}
 
 	/** createLoginScreen */
@@ -277,7 +281,6 @@ public class GraphicsOut extends JFrame {
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g2.setPaint(new Color(125, 125, 125));
 			GradientPaint greyTogrey = new GradientPaint(0, height/2, new Color(151, 151, 151), 0, 0, new Color(75, 69, 69));
-			GradientPaint greyTogrey2 = new GradientPaint(height/2, height, new Color(75, 69, 69), 0, 0, new Color(151, 151, 151));
 			g2.setPaint(greyTogrey);
 			g2.fill(new Rectangle2D.Double(0, 0, width, height/2));
 			g2.setPaint(greyTogrey);
@@ -370,7 +373,6 @@ public class GraphicsOut extends JFrame {
 				number = Integer.parseInt(s.substring(0, 1));
 				//For each work figure out its size and make sure it isn't bigger than set amount
 				for (int j = 1; j < s.length(); j+=1) {
-					char ch = s.charAt(j);
 					end = s.length();
 					//Find the next zero
 					for (int k = j; k < s.length(); k+=1) {
@@ -443,13 +445,16 @@ public class GraphicsOut extends JFrame {
 		}
 	}
 
+	/** drawTopButtons - In Beta - Not Implemented */
 	public void drawTopButtons(Graphics g) {
 		//Exit Buttons
 		g.setColor(colorTopBarGray);
-		g.fillRect(0, 0, width, 23);
+		g.fillRoundRect(0,-10, width, 33, 10, 10);
 		//TODO All the top buttons
 		g.setColor(Color.red);
 		g.fillOval(3, 3, 18, 18);
+		g.setColor(lineGray);
+		g.drawLine(0, 23, width, 23);
 	}
 	
 	/** drawTopBar */
@@ -474,7 +479,7 @@ public class GraphicsOut extends JFrame {
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setStroke(new BasicStroke(5));
 			g2.drawLine(98, 47, 110, 55);
-			g2.drawLine(110, 55, 130, 42);
+			g2.drawLine(110, 55, 135, 37);
 			g2.setStroke(new BasicStroke(1));
 		} else {
 			g.setColor(contactRed);
@@ -598,10 +603,15 @@ public class GraphicsOut extends JFrame {
 		}
 	}
 
+	/** drawContactsMenu */
 	public void drawContactsMenu(Graphics g) {
 		g.setFont(new Font(Font.MONOSPACED, 50, 50));
 		g.setColor(Color.white);
 		g.drawString("Contacts", 170, 70);
+		//Group Messages
+		//Group Messages
+		g.setColor(Color.CYAN);
+		g.fillOval(430, 40, 30, 30);
 		int p = 0;
 		//Loops Through Each Column
 		for (int i = 0; i < 6; i+=1) {
@@ -702,11 +712,11 @@ public class GraphicsOut extends JFrame {
 		data.setuLoginR(uLoginR);
 		data.setpLoginR(pLoginR);
 		//ChatBoxes
-		cb = new ChatBox(chatBoxR, false, CHAR_SIZE, 500);
+		cb = new ChatBox(chatBoxR, false, 500);
 		cb.setVisible(false);
-		uL = new ChatBox(uLoginR, false, 15, 12);
+		uL = new ChatBox(uLoginR, false, 12);
 		uL.setVisible(true);
-		pL = new ChatBox(pLoginR, true, 15, 14);
+		pL = new ChatBox(pLoginR, true, 14);
 		pL.setVisible(true);
 		data.setuLogin(uL);
 		data.setpLogin(pL);
@@ -714,6 +724,7 @@ public class GraphicsOut extends JFrame {
 		data.setSendButtom(new Rectangle(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 11, 100, 40));
 	}
 
+	/** UpdateGraphics */
 	public class UpdateGraphics extends Thread {
 		public void run() {
 			while (true) {
@@ -732,6 +743,9 @@ public class GraphicsOut extends JFrame {
 		}
 	}
 
+	/** UpdateServer 
+	 * Process server writes
+	 */
 	public class UpdateServer extends Thread {
 		int count = 101;
 

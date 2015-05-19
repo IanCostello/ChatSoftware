@@ -2,6 +2,9 @@ package chatC;
 
 import me.iancostello.util.ByteBuffer;
 
+/** ClientUserNode
+ * node ready for printing 
+ */
 public class ClientUserNode {
 	private int level;
 	private String nodeName;

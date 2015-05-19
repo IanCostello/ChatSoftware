@@ -9,6 +9,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import me.iancostello.util.ByteBuffer;
 
+/** ChatServer
+ * Used Handle User Login Requests and Pass them off to a server thread
+ */
 public class ChatServer implements Runnable {
 	private static int backlog=100;						// Allow 100 pending requests
 	public static int serverPort = 2021;				// Bind to this port
@@ -17,7 +20,7 @@ public class ChatServer implements Runnable {
 	private ConcurrentHashMap<String,ServerThread> threadsByUsername;
 	private final String xmlFilepath;
 	private XML xml;
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	/** main */
 	public static void main(String[] args) {
@@ -51,7 +54,7 @@ public class ChatServer implements Runnable {
 				// NOP
 			}
 		}
-		threadsByUsername = new ConcurrentHashMap();
+		threadsByUsername = new ConcurrentHashMap<String, ServerThread>();
 	}
 
 	/** run
@@ -59,6 +62,7 @@ public class ChatServer implements Runnable {
 	 * 		Main server loop.
 	 * 		Wait for connections and check login credentials
 	 */
+	@SuppressWarnings("resource")
 	public void run() {
 		try {
 			// Bind to serverSocket and process requests
@@ -95,10 +99,10 @@ public class ChatServer implements Runnable {
 	 */
 	private InetAddress getExternalIP() throws IOException {
 		try {
-			Enumeration e = NetworkInterface.getNetworkInterfaces();
+			Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
 			while(e.hasMoreElements()) {
 				NetworkInterface n = (NetworkInterface) e.nextElement();
-				Enumeration ee = n.getInetAddresses();
+				Enumeration<InetAddress> ee = n.getInetAddresses();
 				while (ee.hasMoreElements()) {
 					InetAddress ipAddr = (InetAddress) ee.nextElement();
 					byte[] ip = ipAddr.getAddress();
@@ -167,7 +171,7 @@ public class ChatServer implements Runnable {
 	}
 
 	/** ServerThread
-	 *		Process commands to & from the Server
+	 *		Process commands to and from the Server
 	 */
 	public class ServerThread extends ChatSocket implements Runnable {
 		/** Constructor */
@@ -240,6 +244,7 @@ public class ChatServer implements Runnable {
 
 					// Relay the Message
 					iBuf.getToken(token,ByteBuffer.WHITE_SPACE);
+					//Format msg fromWho message
 					if (token.equals("msg")) {
 						iBuf.getToken(token,ByteBuffer.WHITE_SPACE);
 						String username = token.toString();
@@ -266,6 +271,7 @@ public class ChatServer implements Runnable {
 						log(this.getRemoteUser() + " logged off");
 						
 					// Notify all friends that user is active
+					//Format friends friend1 friend2 ...
 					} else if (token.equals("friends")) {
 						// Notify friends that remoteUser came online
 						String message = "active " + getRemoteUser() + "\n";
@@ -288,7 +294,7 @@ public class ChatServer implements Runnable {
 							write(message2);
 						}
 
-					// Add A Friend
+					// Add A Friend Format: addFriend name
 					} else if (token.equals("addFriend"))  {
 						iBuf.getToken(token, ByteBuffer.WHITE_SPACE);
 						String username = token.toString();
@@ -327,9 +333,8 @@ public class ChatServer implements Runnable {
 		}	
 	}
 	
-	/**
-	 * 
-	 *
+	/** ThreadCloser
+	 * Makes sure that closed sockets are actually closed 
 	 */
 	public class ThreadCloser implements Runnable {
 		public void run() {

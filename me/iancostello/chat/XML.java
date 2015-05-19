@@ -7,14 +7,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -22,15 +17,14 @@ import javax.xml.parsers.SAXParserFactory;
 import me.iancostello.sec.SHAHash;
 import me.iancostello.util.ByteBuffer;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
+/** XML
+ * Handles storage of users on the server
+ */
 public class XML {
 	private String filepath;
-	private String[] headerInformation;
 	private ArrayList<UserNode> nodes = new ArrayList<UserNode>();
 	private String rootNode2;
 	List<User> users;
@@ -181,7 +175,7 @@ public class XML {
 //					System.out.println(user.toString());
 				}
 			} else {
-				users = new ArrayList();
+				users = new ArrayList<User>();
 			}
 			
 		} catch (ParserConfigurationException | IOException e) {

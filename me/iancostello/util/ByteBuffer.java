@@ -12,10 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
 
 public class ByteBuffer {
 	private final int FILE_BLOCK_SIZE = 4096;

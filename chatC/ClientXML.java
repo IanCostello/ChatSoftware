@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -18,12 +17,13 @@ import me.iancostello.util.ByteBuffer;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
+/** ClientXML
+ * Handles reading in the XML file, writing it, and user storage
+ */
 public class ClientXML {
 	private String filepath;
 	private ArrayList<ClientUserNode> nodes = new ArrayList<ClientUserNode>();
-	private ArrayList<ClientUserNode> clientUser = new ArrayList<ClientUserNode>();
 	private String rootNode;
 	private ArrayList<ClientUser> users;
 	private ClientUser localUser = new ClientUser();
@@ -35,37 +35,19 @@ public class ClientXML {
 		this.rootNode = rootNode;
 	}
 
+	/** getLocalUser */
 	public String getLocalUserName() {
 		return localUser.getUsername();
 	}
 	
+	/** setLocalUser */
 	public void setLocalUser(String user) {
 		localUser.setUsername(user);
 	}
 	
-	/** addUser
-	 * Adds a new user, not very adaptive, but it works
+	/** addUserNodes
+	 * Adds a new user to the nodes arrayList
 	 * @param user
-	 * @param pass
-	 * @param salt
-	 * @param IP
-	 */
-	private void addUserNodes(String user, String username, String publicKey, String publicMod, String messages) {
-		nodes.add(new ClientUserNode("user", 1, true));
-		nodes.add(new ClientUserNode(2, "name", user));
-		nodes.add(new ClientUserNode(2, "username", username));
-		nodes.add(new ClientUserNode(2, "pubKey", publicKey));
-		nodes.add(new ClientUserNode(2, "pubMod", publicMod));
-		nodes.add(new ClientUserNode(2, "messages", messages.toString()));
-		nodes.add(new ClientUserNode("user", 1, false));
-	}
-	
-	/** addUser
-	 * Adds a new user, not very adaptive, but it works
-	 * @param user
-	 * @param pass
-	 * @param salt
-	 * @param IP
 	 */
 	private void addUserNodes(ClientUser user) {
 		nodes.add(new ClientUserNode("user", 1, true));
@@ -76,15 +58,13 @@ public class ClientXML {
 		nodes.add(new ClientUserNode(2, "messages", user.getFileMessages()));
 		nodes.add(new ClientUserNode("user", 1, false));
 	}
-	
-//	public void addUser(ClientUser user) {
-//		addUser(user.getName(), user.getUsername(), user.getFileMessages(), user.getPubKey(), user.getPubMod());
-//	}
 
+	/** addUser */
 	public void addUser(ClientUser user) {
 		users.add(user);
 	}
 	
+	/** addUser */
 	public void addUser(String name, String username) {
 		ClientUser tempUser = new ClientUser();
 		tempUser.setName(name);
@@ -100,6 +80,7 @@ public class ClientXML {
 		nodes.add(node);
 	}
 	
+	/** getUsers() */
 	public ArrayList<ClientUser> getUsers() {
 		return users;
 	}
@@ -131,20 +112,18 @@ public class ClientXML {
 		try {
 			//Write the most upto date version
 			toWrite.write(new File(filepath));
-			//Create a backup of the data
-			//String sdf = new SimpleDateFormat("yyyy-MM-dd+HH:mm:ss").format(new Date());
-			//String backupData = "/Users/iancostello/Documents/mainProjects/chat/data/backups/users" + sdf + ".xml";
-			//stoWrite.write(new File(backupData));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
+	/** getLocalUser() */
 	public ClientUser getLocalUser() {
 		return localUser;
 	}
 	
-	public ByteBuffer addLocalUser() {
+	/** addLocalUser */
+	private ByteBuffer addLocalUser() {
 		ByteBuffer toWrite = new ByteBuffer();
 		//Start
 		toWrite.append("\t<localUser>\n");

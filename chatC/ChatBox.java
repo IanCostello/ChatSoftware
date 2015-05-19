@@ -8,19 +8,18 @@ public class ChatBox {
 	private boolean protectedInfo;
 	private boolean visible;
 	private String content = "";
-	private int wrap;
-	private int sizeOfChar;
+	//private int sizeOfChar;
 	private boolean shouldWrite;
 	private int maxLength;
 	
 	/** Constuctor
-	 * @param rect
+	 * @param Rectangle rect
+	 * @param boolean secret
+	 * @param int maxLength
 	 */
-	public ChatBox(Rectangle rect, boolean secret, int charSize, int maxLength) {
+	public ChatBox(Rectangle rect, boolean secret, int maxLength) {
 		box = rect;
 		protectedInfo = secret;
-		wrap = (int)(box.width*1.85)/charSize;
-		sizeOfChar = charSize;
 		this.maxLength = maxLength;
 	}
 	
@@ -88,7 +87,6 @@ public class ChatBox {
 	 * 
 	 */
 	public void appendChar(char c) {
-		int length;
 		if (maxLength == -1) {
 			content +=c;
 		} else {
@@ -100,10 +98,6 @@ public class ChatBox {
 
 	public void setBoxX(int newX) {
 		box.x = newX;
-	}
-	
-	public void setCharSize(int i) {
-		sizeOfChar = i;
 	}
 	
 	public void deleteChar() {

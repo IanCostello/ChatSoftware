@@ -6,24 +6,28 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+/** KeyBoardListener
+ * Simple Key Board Listener
+ */
 public class KeyBoardListener implements KeyListener {
 	DataInterface data;
 
+	/** Constructor */
 	public KeyBoardListener(DataInterface data) {
 		super();
 		this.data = data;
 	}
 
-	@SuppressWarnings("static-access")
+	/** keyTyped */
 	@Override
 	public void keyTyped(KeyEvent e) {
 
 	}
 
+	/** keyPressed */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
-		//		System.out.println(keyCode);
 		//If the chat box if focused and the keycode is backspace
 		if (keyCode == 8) {
 			if (data.getChatBox().isFocused()) {
@@ -33,7 +37,7 @@ public class KeyBoardListener implements KeyListener {
 			} else if (data.getpLogin().isFocused()) {
 				data.getpLogin().deleteChar();
 			}
-			//10 = Enter 9 = tab
+		//10 = Enter 9 = tab
 		} else if (keyCode == 10 || keyCode == KeyEvent.VK_TAB) {
 			//If the chat box is focused
 			if (data.getChatBox().isFocused()) {
@@ -50,15 +54,20 @@ public class KeyBoardListener implements KeyListener {
 				if (data.isInLoginScreen()) {
 					long time2 = data.getLoginTime();
 					long time = System.currentTimeMillis();
+					//Try for 15s
 					if (time - time2 > 15000) {
 						data.setLoginTime(time);
 						String user = data.getuLogin().toString();
 						String pass = data.getpLogin().getContent();
 						data.getSocket().connect();
+						//Get if a local user exists
 						String localUserName = data.getXml().getLocalUserName();
+						//If the local user is null
 						if (localUserName !=null) {
+							//Login
 							data.getSocket().write("login " + user + " " + pass + "\n");
 						} else {
+							//Otherwise create a new user
 							ClientUser localUser = data.getXml().getLocalUser();
 							localUser.setUsername(user);
 							JOptionPane.showMessageDialog(new JFrame(), "Creating Your Encyption Keys! This May Take Awhile!", "Notice", JOptionPane.INFORMATION_MESSAGE);
@@ -71,7 +80,7 @@ public class KeyBoardListener implements KeyListener {
 					if (data.getpLogin().toString().indexOf(' ') == -1) {
 						data.getpLogin().appendChar(' ');
 					}
-					//data.getXml().addUser(data.getpLogin().toString(), data.getuLogin().toString());
+					//Get their info
 					data.getSocket().write("addFriend " + data.getuLogin().toString() + "\n");
 					//TODO Get User Info 
 					data.setConnectMenu(false);
@@ -93,6 +102,7 @@ public class KeyBoardListener implements KeyListener {
 		data.setSomethingChanged(true);
 	}
 
+	/** keyReleased*/
 	@Override
 	public void keyReleased(KeyEvent e) {
 

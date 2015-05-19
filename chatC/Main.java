@@ -5,12 +5,20 @@ import java.net.UnknownHostException;
 
 import me.iancostello.chat.ChatServer;
 
+/** Main
+ * Main Class
+ */
 public class Main {
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
+	
+	/** Main */
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.run();
 	}
+	
+	/** Run */
+	@SuppressWarnings("unused")
 	public void run() {
 		//Start the server
 		//Start Local ChatServer For Debug
@@ -27,10 +35,10 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		//Start normal server
+		//Start Clients if debug or create just one
 		if (DEBUG) {
 			new ClientThread(0).start();
-			new ClientThread(1).start();	
+			//new ClientThread(1).start();	
 		} else {
 			new ClientThread(-1).start();	
 		}
@@ -42,6 +50,7 @@ public class Main {
 			this.version = version;
 		}
 		public void run() {
+			@SuppressWarnings("unused")
 			GraphicsOut go = new GraphicsOut(version);
 		}
 	}

@@ -1,16 +1,11 @@
 package chatC;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.math.BigInteger;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 
 import me.iancostello.sec.CostelloKeyPair;
-import me.iancostello.util.ByteBuffer;
 
+/** Client User */
 public class ClientUser {
 	private String name;
 	private String username;
@@ -21,6 +16,9 @@ public class ClientUser {
 	private BigInteger privMod;
 	private boolean online;
 	
+	/** generateKeys 
+	 * Creates new keys of size 4096 for the new user 
+	 */
 	public void generateKeys() {
 		CostelloKeyPair kp = new CostelloKeyPair();
 		BigInteger[] keys = kp.getKeys(4096);
@@ -93,8 +91,6 @@ public class ClientUser {
 			}
 		}
 	}
-	
-	/** Getters and Setters */
 	/**
 	 * @return the username
 	 */

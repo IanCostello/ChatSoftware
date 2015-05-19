@@ -1,14 +1,14 @@
 package chatC;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import me.iancostello.util.ByteBuffer;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/** ClientSaxParser
+ * Handles the actual reading of XML files server side 
+ */
 public class ClientSaxParser extends DefaultHandler {
 	//Storing Users Read In
 	private ArrayList<ClientUser> users;
@@ -26,7 +26,7 @@ public class ClientSaxParser extends DefaultHandler {
 	boolean bLPrivKey;
 	boolean bLPrivMod;
 
-	
+	/** startElement */
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equals("user")) {
@@ -57,6 +57,7 @@ public class ClientSaxParser extends DefaultHandler {
 		}
 	}
 
+	/** endElement */
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equalsIgnoreCase("user")) {
@@ -64,6 +65,7 @@ public class ClientSaxParser extends DefaultHandler {
 		}
 	}
 	
+	/** characters*/
 	@Override
     public void characters(char ch[], int start, int length) throws SAXException {
 		String s = new String(ch, start, length);
@@ -100,6 +102,7 @@ public class ClientSaxParser extends DefaultHandler {
 		}
 	}
 
+	/** endDocument */
 	@Override
 	public void endDocument() {
 		System.out.println("End Of Client Document");
@@ -113,6 +116,7 @@ public class ClientSaxParser extends DefaultHandler {
 		return users;
 	}
 	
+	/** getLocalUser */
 	public ClientUser getLocalUser() {
 		return localUser;
 	}
