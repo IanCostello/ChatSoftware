@@ -53,7 +53,7 @@ public class NotificationWindow {
 			Graphics g = frame.getGraphics();
 			//TODO Change this value up
 			try {
-				Thread.sleep(50);
+				Thread.sleep(75);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}

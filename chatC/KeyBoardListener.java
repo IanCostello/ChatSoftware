@@ -3,6 +3,9 @@ package chatC;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 public class KeyBoardListener implements KeyListener {
 	DataInterface data;
 
@@ -58,6 +61,7 @@ public class KeyBoardListener implements KeyListener {
 						} else {
 							ClientUser localUser = data.getXml().getLocalUser();
 							localUser.setUsername(user);
+							JOptionPane.showMessageDialog(new JFrame(), "Creating Your Encyption Keys! This May Take Awhile!", "Notice", JOptionPane.INFORMATION_MESSAGE);
 							localUser.generateKeys();
 							data.getSocket().write("create " + user + " " + pass + " "+ localUser.getPublicKey()+ " " + localUser.getPublicMod() + '\n');
 						}

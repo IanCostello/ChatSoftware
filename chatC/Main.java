@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 import me.iancostello.chat.ChatServer;
 
 public class Main {
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	public static void main(String[] args) {
 		Main main = new Main();
 		main.run();

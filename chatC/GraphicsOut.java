@@ -1,5 +1,6 @@
 package chatC;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -8,36 +9,23 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Insets;
-import java.awt.List;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 
 import me.iancostello.chat.ChatServer;
-import me.iancostello.chat.ChatSocket;
 import me.iancostello.sec.CostelloKeyPair;
 import me.iancostello.util.ByteBuffer;
 
@@ -47,14 +35,13 @@ public class GraphicsOut extends JFrame {
 	private ArrayList<Rectangle> changedAreas;
 	private boolean firstRun = true;
 	private boolean firstPaint = true;
-	private boolean firstRunForUpdate = true;
+	private boolean firstRunForUpdate = false;
 	//Vars
 	private DataInterface data;
 	private Rectangle clickableExpand;
 	private int height;
 	private int width;
-	private int origHeight;
-	private int origWidth;
+
 	private Rectangle sideBar;
 	private Rectangle lockRect = new Rectangle(593, 42, 38, 32);
 	//Finals
@@ -87,8 +74,10 @@ public class GraphicsOut extends JFrame {
 	Color topBarContactGray = new Color (200, 200, 200); //Grey
 	Color colorTopBarGray = new Color (155,155,155); //Grey
 	Color defaultInfoGray = new Color (155,155,155); //Grey
-	Color chatGray = new Color (240,240,240); //Grey
+	Color lineGray = new Color (85,85,85); //Grey
+	Color chatGray = new Color (167,171,192); //Grey
 	Color sendButtonGreen = new Color (130,219,136); //Grey
+	Color backGroundGrey = new Color (240,240,240); //Grey
 
 	//Fonts
 	Font chatBoxFont = new Font(Font.SANS_SERIF, CHAR_SIZE, CHAR_SIZE);
@@ -157,7 +146,11 @@ public class GraphicsOut extends JFrame {
 				exit();
 			}
 		});	
-
+		//Get the OS
+		String os = System.getProperty("os.name").toLowerCase();
+		if (os.indexOf("win") >= 0) {
+			JOptionPane.showMessageDialog(new JFrame(), "This Program does not support windows! Graphics Will Not Display Correctly!", "Warning", JOptionPane.WARNING_MESSAGE);
+		}
 		//Vars
 		initVars();
 		//Mouse 
@@ -176,9 +169,11 @@ public class GraphicsOut extends JFrame {
 	/** Exit - Called When the Program Exits */
 	public void exit() {
 		//Notify Server of Logout
-		data.getSocket().write("logout\n");
+		if (!data.isInLoginScreen()) {
+			data.getSocket().write("logout\n");
+			data.getXml().write();
+		}
 		//Save The Xml
-		data.getXml().write();
 		System.out.println("Exiting...");
 		System.exit(0);
 	}
@@ -196,17 +191,16 @@ public class GraphicsOut extends JFrame {
 	public void paint(Graphics g) {
 		//Test
 		if (firstRun) {
-			g.setColor(Color.white);
+			g.setColor(backColor);
 			g.fillRect(0, 0, width, height);
 			firstRun = false;
 		}
-		origHeight = height;
-		origWidth = width;
 		height = this.getHeight();
 		width = this.getWidth();
 		if (data.isInLoginScreen()) {
 			createLoginScreen(g);
 		} else {
+			backColor = backGroundGrey;
 			if (data.getCurrentUser() >= data.getXml().getUsers().size()) {
 				data.setCurrentUser(lastUser);
 				data.setConnectMenu(true);
@@ -349,7 +343,7 @@ public class GraphicsOut extends JFrame {
 			//Get the user
 			lastUser = data.getCurrentUser();
 			//Clear the message screen
-			g.setColor(Color.white);
+			g.setColor(backColor);
 			g.fillRect(50, 75, width-50, height-75);
 			//Get the font
 			g.setFont(chatFont);
@@ -473,17 +467,24 @@ public class GraphicsOut extends JFrame {
 			g.drawString(data.getXml().getUsers().get(data.getCurrentUser()).getName(), (width/2)-(length/2), height + 15);
 		}
 		//Draw Lock
-		g.drawImage(santaImage, 590, 26, 40, 44, null);
+		//g.drawImage(santaImage, 590, 26, 40, 44, null);
 		//Draw Online Or Offline
 		if (data.getXml().getUsers().get(data.getCurrentUser()).isOnline()) {
 			g.setColor(contactGreen);
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setStroke(new BasicStroke(5));
+			g2.drawLine(98, 47, 110, 55);
+			g2.drawLine(110, 55, 130, 42);
+			g2.setStroke(new BasicStroke(1));
 		} else {
 			g.setColor(contactRed);
+			g.fillOval(93, 45, 10, 10);
+			g.fillOval(106, 45, 10, 10);
+			g.fillOval(119, 45, 10, 10);
 		}
 		//Inside oval - Possible Contact Photos Later on
-		g.fillOval(73, 27, 43, 43);
-		g.setColor(contactCircleGray);
-		g.fillOval(77, 31, 35, 35);
+		//g.fillOval(73, 27, 43, 43);
+		//g.fillOval(77, 31, 35, 35);
 	
 	}
 
@@ -530,14 +531,13 @@ public class GraphicsOut extends JFrame {
 
 		//Send
 		g.setColor(sendButtonGreen);
-		g.fillRoundRect(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 6, 100, 50, 10, 10);
-		g.drawImage(sendImage, data.getChatBox().getX() + data.getChatBox().getWidth() + 15, data.getChatBox().getY() + 14, 90, 35, null);
+		//g.fillRoundRect(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 6, 100, 50, 10, 10);
+		g.fillOval(data.getChatBox().getX() + data.getChatBox().getWidth()+10, data.getChatBox().getY(), 60, 60);
+		g.drawImage(sendImage, data.getChatBox().getX() + data.getChatBox().getWidth() + 15, data.getChatBox().getY() + 15, 45, 30, null);
 	}
 
 	/** drawSideBar */
 	public void drawSideBar(Graphics g) {
-
-		backColor = Color.white;
 		//Changes to Vars
 		sideBar.height = height;
 		clickableExpand.y = (height - 70);
@@ -591,7 +591,11 @@ public class GraphicsOut extends JFrame {
 		data.setExpandBox(clickableExpand);
 		data.setContacts(new Rectangle(sideBar.x, 30, 50, 65));
 		data.setSideBar(sideBar);
-
+		//Lines
+		g.setColor(lineGray);
+		if (!data.isExpandBoxPressed()) {
+			g.drawLine(50, 23, 50, 75);
+		}
 	}
 
 	public void drawContactsMenu(Graphics g) {
@@ -686,15 +690,12 @@ public class GraphicsOut extends JFrame {
 		//Height and Width
 		height = this.getHeight();
 		width = this.getWidth();
-		//For overlaying
-		origHeight = height;
-		origWidth = width;
 		//Rectangles
 		clickableExpand = new Rectangle(46, height - 70, 12, 30);
 		data.setExpandBox(clickableExpand);
 		changedAreas = new ArrayList<Rectangle>();
 		sideBar = new Rectangle(0, 0, SIDE_BAR_WIDTH, height);
-		chatBoxR = new Rectangle(57, 385, width - 180, height - 390);
+		chatBoxR = new Rectangle(57, 385, width - 140, height - 390);
 		uLoginR = new Rectangle((int)(width * 0.3), (int)(height * 0.35), (int)(width * 0.4), 50);
 		pLoginR = new Rectangle((int)(width * 0.3), (int)(height * 0.55), (int)(width * 0.4), 50);
 		data.setLockRectangle(lockRect);
