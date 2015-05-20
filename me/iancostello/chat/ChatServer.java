@@ -20,7 +20,7 @@ public class ChatServer implements Runnable {
 	private ConcurrentHashMap<String,ServerThread> threadsByUsername;
 	private final String xmlFilepath;
 	private XML xml;
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	/** main */
 	public static void main(String[] args) {

@@ -122,7 +122,7 @@ public class GraphicsOut extends JFrame {
 		setSize(725, 450);
 		setResizable(false);
 		setUndecorated(false);
-
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		//For Debug
 		if (version == 0) {
 			setTitle("Secure Chat - Ian");
@@ -191,12 +191,6 @@ public class GraphicsOut extends JFrame {
 
 	/** Paint Method */
 	public void paint(Graphics g) {
-		//Test
-		if (firstRun) {
-			g.setColor(backColor);
-			g.fillRect(0, 0, width, height);
-			firstRun = false;
-		}
 		height = this.getHeight();
 		width = this.getWidth();
 		if (data.isInLoginScreen()) {
@@ -229,13 +223,16 @@ public class GraphicsOut extends JFrame {
 
 	/** connectMenu */
 	public void connectMenu(Graphics g) {
-		if (data.isBigChange()) {
+		if (data.getpLoginR().getX() != 175) {
+			//Make Sure The Input boxes are being draw in the correct place
 			data.getpLogin().setBoxX(175);
 			data.getuLogin().setBoxX(175);
 			data.getpLoginR().x = 175;
 			data.getpLoginR().x = 175;
 			data.getpLogin().setProtected(false);
 			data.setFirstRunSinceLogin(false); 
+		}
+		if (data.isBigChange()) {
 			//Draw Contact Text
 			g.setFont(new Font(Font.MONOSPACED, 50, 50));
 			g.drawString("Add a Friend", 145, 80);
@@ -256,13 +253,16 @@ public class GraphicsOut extends JFrame {
 		g.fillRoundRect(logX, heightPY, loginWidth, 50, 10, 10);
 		g.setColor(Color.black);
 		g.setFont(loginFont);
+		//Get Length For Centering
 		FontMetrics fontMet = g.getFontMetrics();
 		String uLoginInfo = data.getuLogin().toString();
 		String pLoginInfo = data.getpLogin().toString();
 		int uLength = fontMet.stringWidth(uLoginInfo);
 		int	pLength = fontMet.stringWidth(pLoginInfo);
+		//Draw The String
 		g.drawString(uLoginInfo, logX+(loginWidth/2)-(uLength/2), heightUY+38);
 		g.drawString(pLoginInfo, logX+(loginWidth/2)-(pLength/2), heightPY+38);
+		//Add the focus listeners
 		g.setColor(Color.blue);
 		if (data.getuLogin().isFocused()) {
 			g.drawRoundRect(logX, heightUY, loginWidth, 50, 10, 10);
@@ -366,6 +366,7 @@ public class GraphicsOut extends JFrame {
 				//Get the message
 				String s = multi.get(i);
 				String t = "";
+				//For Drawing
 				int length = 0;
 				int end = 0;
 				int totalLength = 0;
@@ -610,8 +611,8 @@ public class GraphicsOut extends JFrame {
 		g.drawString("Contacts", 170, 70);
 		//Group Messages
 		//Group Messages
-		g.setColor(Color.CYAN);
-		g.fillOval(430, 40, 30, 30);
+//		g.setColor(Color.CYAN);
+//		g.fillOval(430, 40, 30, 30);
 		int p = 0;
 		//Loops Through Each Column
 		for (int i = 0; i < 6; i+=1) {
@@ -721,7 +722,7 @@ public class GraphicsOut extends JFrame {
 		data.setuLogin(uL);
 		data.setpLogin(pL);
 		data.setChatBox(cb);
-		data.setSendButtom(new Rectangle(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY() + 11, 100, 40));
+		data.setSendButtom(new Rectangle(data.getChatBox().getX() + data.getChatBox().getWidth() + 10, data.getChatBox().getY(), 100, 60));
 	}
 
 	/** UpdateGraphics */
@@ -736,7 +737,6 @@ public class GraphicsOut extends JFrame {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -863,16 +863,15 @@ public class GraphicsOut extends JFrame {
 						if (size>0) {
 							data.getSocket().write(friends);
 						}
-						data.getpLogin().clear();
-						data.getuLogin().clear();
 					} else {
 						data.setLoginTime(0);
-						//TODO Display
 						System.out.println(bBuf.toString());
 						String msg = bBuf.toString();
 						JOptionPane.showMessageDialog(new JFrame(), msg, "Error", JOptionPane.ERROR_MESSAGE);
 					}
-					data.setWaitChange(true);
+					data.getpLogin().clear();
+					data.getuLogin().clear();
+					
 					// Message
 					//   msg fromUser TheMessage
 				} else if (bBuf.startsWith("msg ")) {
@@ -900,10 +899,12 @@ public class GraphicsOut extends JFrame {
 						user.addMessage(message.toString(), false);
 						String capitalized = messageSender.substring(0, 1).toUpperCase() + messageSender.substring(1);
 						if (!isFocused() || !data.getXml().getUsers().get(data.getCurrentUser()).getUsername().equalsIgnoreCase(messageSender)) {
-							nw.createWindow(" New Message From " + capitalized);
+							nw.createWindow("New Message From " + capitalized);
+							requestFocus(true);
+							toFront();
 						}
 					}
-					data.setWaitChange(true);
+					
 
 					// Active
 					//   active mark markus
@@ -918,7 +919,7 @@ public class GraphicsOut extends JFrame {
 							System.out.println("Server Updated an Active User, But User is not a Friend");
 						}
 					}
-					data.setWaitChange(true);
+					
 
 					// Inactive
 					//   inactive mark markus
@@ -961,7 +962,17 @@ public class GraphicsOut extends JFrame {
 						data.getXml().addUser(newFriend);
 						data.getXml().write();
 					}
-					data.setWaitChange(true);
+					data.getpLogin().clear();
+					data.getuLogin().clear();
+					
+				} else if (bBuf.startsWith("pubMessage ")) {
+					bBuf.moveStart(bBuf.start() + 11);
+					ByteBuffer token = new ByteBuffer();
+					bBuf.getToken(token, ByteBuffer.WHITE_SPACE);
+					String whoSent = token.toString();
+					bBuf.getToken(token, ByteBuffer.WHITE_SPACE);
+					String message = token.toString();
+					data.getXml().getUser("welcomeBot").addMessage(whoSent+ ":"+message, false);
 				}
 				data.setSomethingChanged(true);
 			}

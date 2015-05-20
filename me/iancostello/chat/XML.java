@@ -178,7 +178,9 @@ public class XML {
 				users = new ArrayList<User>();
 			}
 			
-		} catch (ParserConfigurationException | IOException e) {
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch(IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();

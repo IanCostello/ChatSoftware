@@ -12,13 +12,6 @@ public class SHAHash {
 	private static byte[] PasswordPad = { 
 		0x28, (byte)0xBF, 0x4E, 0x5E, 0x4E, 0x75, (byte)0x8A, 0x41, 0x64, 0x00, 0x4E, 0x56, (byte)0xFF, (byte)0xFA, 0x01, 0x08,
 		0x2E, 0x2E, 0x00, (byte)0xB6, (byte)0xD0, 0x68, 0x3E, (byte)0x80, 0x2F, 0x0C, (byte)0xA9, (byte)0xFE, 0x64, 0x53, 0x69, 0x7A };	
-//	public static void main(String[] args) throws NoSuchAlgorithmException {
-//		String passwordToHash = "password";
-//		String salt = getSalt();
-//		String securePassword;
-//		securePassword = get_SHA_512_SecurePassword(passwordToHash, salt);
-//		System.out.println(securePassword);
-//	}1
 
 	/**
 	  * 

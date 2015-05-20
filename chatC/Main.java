@@ -9,7 +9,7 @@ import me.iancostello.chat.ChatServer;
  * Main Class
  */
 public class Main {
-	public static final boolean DEBUG = true;
+	public static final boolean DEBUG = false;
 	
 	/** Main */
 	public static void main(String[] args) {
@@ -38,7 +38,7 @@ public class Main {
 		//Start Clients if debug or create just one
 		if (DEBUG) {
 			new ClientThread(0).start();
-			//new ClientThread(1).start();	
+			new ClientThread(1).start();	
 		} else {
 			new ClientThread(-1).start();	
 		}

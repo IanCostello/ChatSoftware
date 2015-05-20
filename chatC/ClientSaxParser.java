@@ -14,6 +14,7 @@ public class ClientSaxParser extends DefaultHandler {
 	private ArrayList<ClientUser> users;
 	private ClientUser tempUser;
 	private ClientUser localUser = new ClientUser();
+	private DataInterface data;
 	//Variables For Getting Certain Information
 	boolean bName;
 	boolean bUser;
@@ -25,14 +26,19 @@ public class ClientSaxParser extends DefaultHandler {
 	boolean bLPubMod;
 	boolean bLPrivKey;
 	boolean bLPrivMod;
-
+	boolean bLastUser;
+	
+	public ClientSaxParser(DataInterface data) {
+		this.data = data;
+	}
+	
 	/** startElement */
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equals("user")) {
 			tempUser = new ClientUser();
 			if (users == null) {
-				users = new ArrayList<>();
+				users = new ArrayList<ClientUser>();
 			}
 		} else if (qName.equalsIgnoreCase("username")) {
 			bUser = true;
@@ -54,6 +60,8 @@ public class ClientSaxParser extends DefaultHandler {
 			bLPrivKey = true;
 		} else if (qName.equalsIgnoreCase("localPrivMod")) {
 			bLPrivMod = true;
+		} else if (qName.equalsIgnoreCase("lastUser")) {
+			bLastUser = true;
 		}
 	}
 
@@ -99,6 +107,15 @@ public class ClientSaxParser extends DefaultHandler {
 		}  else if (bLPrivMod) {
 			localUser.setPrivMod(s);
 			bLPrivMod = false;
+		} else if (bLastUser) {
+			int number = 0;
+			try {
+				number = Integer.parseInt(s);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+			data.setCurrentUser(number);
+			bLastUser = false;
 		}
 	}
 

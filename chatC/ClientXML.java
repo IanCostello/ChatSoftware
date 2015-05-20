@@ -22,17 +22,21 @@ import org.xml.sax.SAXException;
  * Handles reading in the XML file, writing it, and user storage
  */
 public class ClientXML {
+	//Single User
 	private String filepath;
 	private ArrayList<ClientUserNode> nodes = new ArrayList<ClientUserNode>();
 	private String rootNode;
+	//private ArrayList<ClientUser> users;
 	private ArrayList<ClientUser> users;
 	private ClientUser localUser = new ClientUser();
+	private DataInterface data;
 	
 	/** Constructor */
-	public ClientXML(String fileLocation, String rootNode) {
+	public ClientXML(String fileLocation, String rootNode, DataInterface data) {
 		users = new ArrayList<ClientUser>();
 		filepath = fileLocation;
 		this.rootNode = rootNode;
+		this.data = data;
 	}
 
 	/** getLocalUser */
@@ -157,6 +161,10 @@ public class ClientXML {
 			 toWrite.append(localUser.getPrivMod().toString());
 		}
 		toWrite.append("</localPrivMod>\n");
+		//Last User
+		toWrite.append("\t\t<lastUser>");
+		toWrite.append(data.getCurrentUser());
+		toWrite.append("</lastUser>\n");
 		//End
 		toWrite.append("\t</localUser>\n");
 		return toWrite;
@@ -177,7 +185,7 @@ public class ClientXML {
 
 			//Init parser
 			SAXParser saxParser = saxParserFactory.newSAXParser();
-			ClientSaxParser parser = new ClientSaxParser();
+			ClientSaxParser parser = new ClientSaxParser(data);
 			saxParser.parse(is, parser);
 			ArrayList<ClientUser> users2 = parser.getUserList();
 			if (users2 != null) {
@@ -193,7 +201,9 @@ public class ClientXML {
 				e1.printStackTrace();
 			}
 
-		} catch (ParserConfigurationException | IOException e) {
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			System.out.println("File Probably Is Empty");

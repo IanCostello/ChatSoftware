@@ -39,6 +39,7 @@ public class NotificationWindow {
 			int width = 200;
 			int height = 50;
 			JFrame frame = new JFrame("Notification Window");
+			int fontSize = 14;
 			//Create a new window in the top right of the screen that is undecorated
 			frame.setUndecorated(true);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -57,6 +58,7 @@ public class NotificationWindow {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
+			
 			//Looks of the window
 			g.setColor(topAreaBlue);
 			g.fillRect(0, 0, width, 20);
@@ -67,6 +69,12 @@ public class NotificationWindow {
 			g.setFont(new Font(Font.SANS_SERIF, 14, 14));
 			FontMetrics fontMet = g.getFontMetrics();
 			int widthOfMessage = fontMet.stringWidth(message);
+			while (widthOfMessage > (width)) {
+				fontSize -=1;
+				fontMet = g.getFontMetrics();
+				widthOfMessage = fontMet.stringWidth(message);
+				g.setFont(new Font(Font.SANS_SERIF, fontSize, fontSize));
+			}
 			g.setColor(notificationBlack);
 			g.drawString(message, width/2 - widthOfMessage/2, 40);
 			try {

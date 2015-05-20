@@ -2,13 +2,15 @@ package chatC;
 
 import java.awt.Rectangle;
 
+/** ChatBox
+ * Handles User Input
+ */
 public class ChatBox {
 	private Rectangle box;
 	private boolean focused;
 	private boolean protectedInfo;
 	private boolean visible;
 	private String content = "";
-	//private int sizeOfChar;
 	private boolean shouldWrite;
 	private int maxLength;
 	

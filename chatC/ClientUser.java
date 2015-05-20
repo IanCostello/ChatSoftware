@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import me.iancostello.sec.CostelloKeyPair;
 
-/** Client User */
+/** Client User 
+ * Stores information of each user
+ */
 public class ClientUser {
 	private String name;
 	private String username;

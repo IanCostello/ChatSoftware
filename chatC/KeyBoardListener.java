@@ -88,7 +88,7 @@ public class KeyBoardListener implements KeyListener {
 				}
 			}
 			data.setBigChange(true);
-			//If the key pressed is not: backspace, shift, function, control, command
+		//If the key pressed is not: backspace, shift, function, control, command
 		} else if (keyCode !=8 && keyCode !=16 && keyCode !=0 && keyCode !=17 && keyCode !=18 && keyCode !=157) {
 			//ChatBox
 			if (data.getChatBox().isFocused()) {

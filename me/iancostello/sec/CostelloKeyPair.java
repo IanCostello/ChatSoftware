@@ -44,17 +44,21 @@ public class CostelloKeyPair {
 			RSAPrivateKeySpec priv = fact.getKeySpec(kp.getPrivate(), RSAPrivateKeySpec.class);
 			BigInteger[] keys = new BigInteger[]{pub.getModulus(), pub.getPublicExponent(), priv.getModulus(), priv.getPrivateExponent()};
 			return keys;
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
-		} 
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 
-	public byte[] encrypt(String s, BigInteger encryptionKey, BigInteger encrytionMod) {
+	/** Encrypt
+	 * Terminology Correct Here */
+	public byte[] encrypt(String s, BigInteger publicExponent, BigInteger publicMod) {
 		try {
 			//Read the Keys in
-			BigInteger m = encrytionMod;
-			BigInteger e = encryptionKey;
+			BigInteger m = publicMod;
+			BigInteger e = publicExponent;
 			RSAPublicKeySpec keySpec = new RSAPublicKeySpec(m, e);
 			KeyFactory fact = KeyFactory.getInstance("RSA");
 			PublicKey pubKey = fact.generatePublic(keySpec);
@@ -62,7 +66,22 @@ public class CostelloKeyPair {
 			cipher.init(Cipher.ENCRYPT_MODE, pubKey);
 			byte[] cipherData = cipher.doFinal(s.getBytes());
 			return cipherData;
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchPaddingException e1) {
+		} catch (InvalidKeySpecException e1) {
+			e1.printStackTrace();
+		} catch (IllegalBlockSizeException e1) {
+			
+			e1.printStackTrace();
+		} catch (BadPaddingException e1) {
+			
+			e1.printStackTrace();
+		} catch (InvalidKeyException e1) {
+			
+			e1.printStackTrace();
+		} catch (NoSuchAlgorithmException e1) {
+			
+			e1.printStackTrace();
+		} catch (NoSuchPaddingException e1) {
+			
 			e1.printStackTrace();
 		}
 		return null;
@@ -82,7 +101,23 @@ public class CostelloKeyPair {
 			cipher.init(Cipher.DECRYPT_MODE, privKey);
 			byte[] returnBytes = cipher.doFinal(data.getBytes(), data.start(), data.length());
 			return returnBytes;
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchPaddingException e1) {
+		/** To Be Complient With JRE 1.6 Needs to be Separate*/
+		} catch (InvalidKeySpecException e1) {
+			e1.printStackTrace();
+		} catch (IllegalBlockSizeException e1) {
+			
+			e1.printStackTrace();
+		} catch (BadPaddingException e1) {
+			
+			e1.printStackTrace();
+		} catch (InvalidKeyException e1) {
+			
+			e1.printStackTrace();
+		} catch (NoSuchAlgorithmException e1) {
+			
+			e1.printStackTrace();
+		} catch (NoSuchPaddingException e1) {
+			
 			e1.printStackTrace();
 		}
 		return null;
@@ -100,7 +135,18 @@ public class CostelloKeyPair {
 			cipher.init(Cipher.DECRYPT_MODE, privKey);
 			byte[] returnBytes = cipher.doFinal(data);
 			return returnBytes;
-		} catch (InvalidKeySpecException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | InvalidKeyException | NoSuchPaddingException e1) {
+		/** To Be Complient With JRE 1.6 Needs to be Separate*/
+		} catch (InvalidKeySpecException e1) {
+			e1.printStackTrace();
+		} catch (IllegalBlockSizeException e1) {
+			e1.printStackTrace();
+		} catch (BadPaddingException e1) {
+			e1.printStackTrace();
+		} catch (InvalidKeyException e1) {
+			e1.printStackTrace();
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+		} catch (NoSuchPaddingException e1) {
 			e1.printStackTrace();
 		}
 		return null;

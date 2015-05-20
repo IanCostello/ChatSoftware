@@ -20,13 +20,13 @@ public class IanSaxParser extends DefaultHandler {
 	boolean bSalt;
 	boolean bPubKey;
 	boolean bPubMod;
-
+	
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		if (qName.equals("user")) {
 			tempUser = new User();
 			if (users == null) {
-				users = new ArrayList<>();
+				users = new ArrayList<User>();
 			}
 		} else if (qName.equalsIgnoreCase("name")) {
 			bName = true;

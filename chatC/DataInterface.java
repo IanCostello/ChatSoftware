@@ -1,6 +1,7 @@
 package chatC;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 /** DataInterface
  * Storage Of All Local Variables
@@ -14,27 +15,36 @@ public class DataInterface {
 	private ChatBox uLogin; //User Login Box
 	private ChatBox pLogin; //Password Login Box
 	private boolean lockPressed; //Whether the lock has been pressed or not
-	private boolean expandBoxChanged;
-	private boolean somethingChanged;
-	private Rectangle uLoginR;
-	private Rectangle pLoginR;
-	private boolean inLoginScreen = true;
-	private boolean shouldLogin;
-	private boolean bigChange;
-	private int currentUser;
-	private boolean contactsPressed;
-	private Rectangle contacts;
-	private int multiUserOldSize;
-	private Rectangle sideBar;
-	private boolean connectMenu;
-	private boolean firstRunSinceLogin = true;
-	private ClientXML xml;
-	private ClientSocket socket;
-	private long loginTime;
-	private boolean setWaitChange;
+	private boolean expandBoxChanged; //If the expand button is pressed
+	private boolean somethingChanged; //If the graphics thread needs to update
+	private Rectangle uLoginR; //The Drawing Info of One of the Input Boxes
+	private Rectangle pLoginR; //The Drawing Info of One of the Other Input Boxes
+	private boolean inLoginScreen = true; //Whether the current screen is the login screen
+	private boolean shouldLogin; //Whether a login or a create should be sent
+	private boolean bigChange; //If the entire screen should be redrawn
+	private int currentUser; //The current user 
+	private boolean contactsPressed; //Whether or not the contacts button is pressed
+	private Rectangle contacts; //Where the contacts image is drawn
+	private int multiUserOldSize; //The old size of the messages array of the current user. Used for performance
+	private Rectangle sideBar; //Where the Sidebar should be drawn
+	private boolean connectMenu; //If the user has pressed the connect menu
+	private boolean firstRunSinceLogin = true; //Used to update the input boxes
+	private ClientXML xml; //Local Data Storage
+	private ClientSocket socket; //Used to talk with the server
+	private long loginTime; //Time to login (For Timeouts)
+	private ArrayList<String> peopleToAddToGroup = new ArrayList<String>(); //Not currently implemented
+	private boolean groupChatCreatePressed; //Not currently implemented
 	
 	protected DataInterface(int version) {
-		xml = new ClientXML((System.getProperty("user.home") + "/chatC/data/users" + version + ".xml"), "users");
+		xml = new ClientXML((System.getProperty("user.home") + "/chatC/data/users" + version + ".xml"), "users", this);
+	}
+	
+	protected ArrayList<String> getUsersToAdd() {
+		return peopleToAddToGroup;
+	}
+	
+	protected void addPersonToGroupSelect(String s) {
+		peopleToAddToGroup.add(s);
 	}
 	
 	protected ClientXML getXml() {
@@ -377,12 +387,12 @@ public class DataInterface {
 		this.loginTime = loginTime;
 	}
 
-	protected boolean isSetWaitChange() {
-		return setWaitChange;
+	public boolean isGroupChatCreatePressed() {
+		return groupChatCreatePressed;
 	}
 
-	protected void setWaitChange(boolean setWaitChange) {
-		this.setWaitChange = setWaitChange;
+	public void setGroupChatCreatePressed(boolean groupChatCreatePressed) {
+		this.groupChatCreatePressed = groupChatCreatePressed;
 	}
 	
 }
