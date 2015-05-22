@@ -97,13 +97,13 @@ public class GraphicsOut extends JFrame {
 	//Contacts
 	private int lastUser;
 	//Images
-	ImageIcon contactImageIcon = getImage("/chatC/images/Contact.png");
+	ImageIcon contactImageIcon = getImage("/me/iancostello/chatC/images/Contact.png");
 	Image contactImage;
-	ImageIcon lockImageIcon = getImage("/chatC/images/Lock.png");
+	ImageIcon lockImageIcon = getImage("/me/iancostello/chatC/images/Lock.png");
 	Image lockImage;
-	ImageIcon sendImageIcon = getImage("/chatC/images/send.png");
+	ImageIcon sendImageIcon = getImage("/me/iancostello/chatC/images/send.png");
 	Image sendImage;
-	ImageIcon gearImageIcon = getImage("/chatC/images/Settings.png");
+	ImageIcon gearImageIcon = getImage("/me/iancostello/chatC/images/Settings.png");
 	Image gearImage;
 	//Users
 	NotificationWindow nw = new NotificationWindow();
@@ -715,15 +715,15 @@ public class GraphicsOut extends JFrame {
 	}
 	
 	public void initFonts() {
-		titleNameFont = initFont("/chatC/fonts/SourceSansPro-Regular.otf", 45f);
-		chatBoxFont = initFont("/chatC/fonts/SourceSansPro-Regular.otf", 20f);
-		chatFont = initFont("/chatC/fonts/SourceSansPro-Regular.otf", 15f);
-		titleFont = initFont("/chatC/fonts/Sumana-Regular.ttf", 50f);
-		contactFont = initFont("/chatC/fonts/Sumana-Regular.ttf", 25f);
-		onlineFont = initFont("/chatC/fonts/steelfish-rg.ttf", 18f);
-		connectFont	= initFont("/chatC/fonts/steelfish-rg.ttf", 13f);
-		friendsFont = initFont("/chatC/fonts/steelfish-rg.ttf", 16f);
-		loginFont = initFont("/chatC/fonts/Sumana-Regular.ttf", 40f);
+		titleNameFont = initFont("/me/iancostello/chatC/fonts/SourceSansPro-Regular.otf", 45f);
+		chatBoxFont = initFont("/me/iancostello/chatC/fonts/SourceSansPro-Regular.otf", 20f);
+		chatFont = initFont("/me/iancostello/chatC/fonts/SourceSansPro-Regular.otf", 15f);
+		titleFont = initFont("/me/iancostello/chatC/fonts/Sumana-Regular.ttf", 50f);
+		contactFont = initFont("/me/iancostello/chatC/fonts/Sumana-Regular.ttf", 25f);
+		onlineFont = initFont("/me/iancostello/chatC/fonts/steelfish-rg.ttf", 18f);
+		connectFont	= initFont("/me/iancostello/chatC/fonts/steelfish-rg.ttf", 13f);
+		friendsFont = initFont("/me/iancostello/chatC/fonts/steelfish-rg.ttf", 16f);
+		loginFont = initFont("/me/iancostello/chatC/fonts/Sumana-Regular.ttf", 40f);
 	}
 	
 	/** Init Place For Most Vars*/
