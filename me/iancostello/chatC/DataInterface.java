@@ -1,4 +1,4 @@
-package chatC;
+package me.iancostello.chatC;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package chatC;
+package me.iancostello.chatC;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

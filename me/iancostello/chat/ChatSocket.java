@@ -5,7 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import chatC.DataInterface;
+import me.iancostello.chatC.DataInterface;
 import me.iancostello.util.ByteBuffer;
 
 /** ChatSocket

@@ -1,14 +1,16 @@
-package chatC;
+package me.iancostello.chatC;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
@@ -16,7 +18,9 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -37,7 +41,6 @@ public class GraphicsOut extends JFrame {
 	private static final long serialVersionUID = -1417201266697509030L;
 	//For Updating
 	private ArrayList<Rectangle> changedAreas;
-	private boolean firstRun = true;
 	private boolean firstPaint = true;
 	private boolean firstRunForUpdate = false;
 	//Vars
@@ -82,24 +85,25 @@ public class GraphicsOut extends JFrame {
 	AlphaComposite composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
 	
 	//Fonts
-	Font chatBoxFont = new Font(Font.SANS_SERIF, CHAR_SIZE, CHAR_SIZE);
-	Font chatFont = new Font(Font.DIALOG_INPUT, 15, 15);
-	Font titleFont = new Font(Font.MONOSPACED, 42, 42);
-	Font contactFont = new Font(Font.SERIF, 25, 25);
-	Font onlineFont = new Font(Font.SERIF, 10, 10);
-	Font connectFont = new Font(Font.SERIF, 13, 13);
-	Font friendsFont = new Font(Font.SERIF, 16, 16);
-	Font loginFont = new Font(Font.SANS_SERIF, 40, 40);
+	Font titleFont;
+	Font contactFont;
+	Font onlineFont;
+	Font connectFont;
+	Font friendsFont;
+	Font loginFont;
+	Font titleNameFont;
+	Font chatFont;
+	Font chatBoxFont;
 	//Contacts
 	private int lastUser;
 	//Images
-	ImageIcon contactImageIcon = getImage("/me/iancostello/chat/images/Contact.png");
+	ImageIcon contactImageIcon = getImage("/chatC/images/Contact.png");
 	Image contactImage;
-	ImageIcon santaImageIcon = getImage("/me/iancostello/chat/images/Lock.png");
-	Image santaImage;
-	ImageIcon sendImageIcon = getImage("/me/iancostello/chat/images/send.png");
+	ImageIcon lockImageIcon = getImage("/chatC/images/Lock.png");
+	Image lockImage;
+	ImageIcon sendImageIcon = getImage("/chatC/images/send.png");
 	Image sendImage;
-	ImageIcon gearImageIcon = getImage("/me/iancostello/chat/images/Settings.png");
+	ImageIcon gearImageIcon = getImage("/chatC/images/Settings.png");
 	Image gearImage;
 	//Users
 	NotificationWindow nw = new NotificationWindow();
@@ -123,12 +127,15 @@ public class GraphicsOut extends JFrame {
 		setResizable(false);
 		setUndecorated(false);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		initFonts();
 		//For Debug
 		if (version == 0) {
 			setTitle("Secure Chat - Ian");
 		} else if (version == 1) {
 			setTitle("Secure Chat - Mark");
-		}	
+		} else {
+			setTitle("Secure Chat");
+		}
 		//Create Data Interface
 		data = new DataInterface(version);
 		//Read in from the XML
@@ -180,14 +187,7 @@ public class GraphicsOut extends JFrame {
 		System.exit(0);
 	}
 
-	/** getImage */
-	private ImageIcon getImage(String path) {
-		//Loads the resource | For Jars
-		ImageIcon image=null;
-		URL url = getClass().getResource(path);
-		image = new ImageIcon(url);
-		return image;
-	}
+	
 
 	/** Paint Method */
 	public void paint(Graphics g) {
@@ -288,7 +288,7 @@ public class GraphicsOut extends JFrame {
 			firstPaint = false;
 			g.setFont(titleFont);
 			g.setColor(Color.white);
-			g.drawString("Private Secure Messaging", 60, 80);
+			g.drawString("Private Secure Messaging", 73, 100);
 		}
 
 		//Draw Login Bar
@@ -315,10 +315,10 @@ public class GraphicsOut extends JFrame {
 		//Draw Default Info
 		g.setColor(defaultInfoGray);
 		if (uLoginInfo.equals("")) {
-			g.drawString("Username", logX-(uLength/2)+43, heightUY+40);
+			g.drawString("Username", logX-(uLength/2)+52, heightUY+38);
 		} 
 		if (pLoginInfo.equals("")) {
-			g.drawString("Password", logX-(pLength/2)+52, heightPY+40);
+			g.drawString("Password", logX-(pLength/2)+58, heightPY+38);
 		}
 		//Draw The Focused Box
 		g.setColor(Color.blue);
@@ -460,17 +460,15 @@ public class GraphicsOut extends JFrame {
 	
 	/** drawTopBar */
 	public void drawTopBar(Graphics g) {
-		//Base Color
 		g.setColor(topBarGray);
 		g.fillRect(0, 0, width, 75);
 		//Name
 		FontMetrics fontMet = g.getFontMetrics(titleFont);
+		g.setFont(titleNameFont);
 		if (data.getXml().getUsers().size() > 0) {
 			int length = fontMet.stringWidth(data.getXml().getUsers().get(data.getCurrentUser()).getName());
-			int height = fontMet.getHeight();
-			g.setFont(titleFont);
 			g.setColor(topBarContactGray);
-			g.drawString(data.getXml().getUsers().get(data.getCurrentUser()).getName(), (width/2)-(length/2), height + 15);
+			g.drawString(data.getXml().getUsers().get(data.getCurrentUser()).getName(), (width/2)-(length/2), 64);
 		}
 		//Draw Lock
 		//g.drawImage(santaImage, 590, 26, 40, 44, null);
@@ -582,7 +580,7 @@ public class GraphicsOut extends JFrame {
 		//Friends 
 		g.setFont(onlineFont);
 		g.setColor(Color.black);
-		g.drawString("Friends On", sideBar.x + 3, height/2);
+		g.drawString("Friends On", sideBar.x + 1, height/2);
 		g.setFont(friendsFont);
 		FontMetrics fontMet = g.getFontMetrics();
 		String s = data.getFriendsOnline() + "/" + data.getXml().getUsers().size();
@@ -691,11 +689,48 @@ public class GraphicsOut extends JFrame {
 		g.fillRoundRect(r.x, r.y, r.width, r.height, x, y);
 	}
 
+	/** getImage */
+	private ImageIcon getImage(String path) {
+		//Loads the resource | For Jars
+		ImageIcon image=null;
+		URL url = getClass().getResource(path);
+		image = new ImageIcon(url);
+		return image;
+	}
+	
+	public Font initFont(String filepath, float size) {
+		try {
+			InputStream is = getClass().getResourceAsStream(filepath);
+			BufferedInputStream file = new BufferedInputStream(is);
+			Font tempFont = Font.createFont(Font.TRUETYPE_FONT, file).deriveFont(size);
+			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			ge.registerFont(tempFont);
+			return tempFont;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (FontFormatException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void initFonts() {
+		titleNameFont = initFont("/chatC/fonts/SourceSansPro-Regular.otf", 45f);
+		chatBoxFont = initFont("/chatC/fonts/SourceSansPro-Regular.otf", 20f);
+		chatFont = initFont("/chatC/fonts/SourceSansPro-Regular.otf", 15f);
+		titleFont = initFont("/chatC/fonts/Sumana-Regular.ttf", 50f);
+		contactFont = initFont("/chatC/fonts/Sumana-Regular.ttf", 25f);
+		onlineFont = initFont("/chatC/fonts/steelfish-rg.ttf", 18f);
+		connectFont	= initFont("/chatC/fonts/steelfish-rg.ttf", 13f);
+		friendsFont = initFont("/chatC/fonts/steelfish-rg.ttf", 16f);
+		loginFont = initFont("/chatC/fonts/Sumana-Regular.ttf", 40f);
+	}
+	
 	/** Init Place For Most Vars*/
 	public void initVars() {
 		//Images
 		contactImage = contactImageIcon.getImage();
-		santaImage = santaImageIcon.getImage();
+		lockImage = lockImageIcon.getImage();
 		sendImage = sendImageIcon.getImage();
 		gearImage = gearImageIcon.getImage();
 		//Height and Width

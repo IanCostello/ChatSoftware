@@ -2,7 +2,7 @@
  * Creates a Notification New Window
  * 
  */
-package chatC;
+package me.iancostello.chatC;
 
 import java.awt.Color;
 import java.awt.Dimension;

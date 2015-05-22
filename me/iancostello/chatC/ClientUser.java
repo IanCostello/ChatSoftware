@@ -1,4 +1,4 @@
-package chatC;
+package me.iancostello.chatC;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

@@ -195,13 +195,13 @@ public class ByteBuffer {
 		return true;
 	}
 	
-	/** readURL
+	/** read
 	 * 
 	 * @param url
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean readStream(InputStream in) throws IOException {
+	public boolean read(InputStream in) throws IOException {
 		start = end = 0;
 		try {
 			while (true) {
