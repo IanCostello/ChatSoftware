@@ -9,7 +9,7 @@ import me.iancostello.chat.ChatServer;
  * Main Class
  */
 public class Main {
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 	
 	/** Main */
 	public static void main(String[] args) {

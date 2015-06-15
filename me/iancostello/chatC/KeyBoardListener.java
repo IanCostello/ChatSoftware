@@ -65,14 +65,14 @@ public class KeyBoardListener implements KeyListener {
 						//If the local user is null
 						if (localUserName !=null) {
 							//Login
-							data.getSocket().write("login " + user + " " + pass + "\n");
+							data.getSocket().privWrite("login " + user + " " + pass + "\n");
 						} else {
 							//Otherwise create a new user
 							ClientUser localUser = data.getXml().getLocalUser();
 							localUser.setUsername(user);
 							JOptionPane.showMessageDialog(new JFrame(), "Creating Your Encyption Keys! This May Take Awhile!", "Notice", JOptionPane.INFORMATION_MESSAGE);
 							localUser.generateKeys();
-							data.getSocket().write("create " + user + " " + pass + " "+ localUser.getPublicKey()+ " " + localUser.getPublicMod() + '\n');
+							data.getSocket().privWrite("create " + user + " " + pass + " "+ localUser.getPublicKey()+ " " + localUser.getPublicMod() + '\n');
 						}
 					}
 				} else if (data.isConnectMenu()) {
